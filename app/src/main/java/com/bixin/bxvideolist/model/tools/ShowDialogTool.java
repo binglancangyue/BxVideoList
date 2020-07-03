@@ -5,12 +5,14 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.view.WindowManager;
+import android.widget.TextView;
 
 import com.bixin.bxvideolist.R;
 import com.bixin.bxvideolist.model.listener.OnDialogListener;
 import com.bixin.bxvideolist.view.customview.CustomDialog;
 
 import java.lang.ref.WeakReference;
+import java.lang.reflect.Field;
 
 /**
  * @author Altair
@@ -22,8 +24,8 @@ public class ShowDialogTool {
     private Context mContext;
     private ProgressDialog loadingDialog;
     private AlertDialog mStopRecordingDialog;
-    private CustomDialog mDeleteDialog;
-    private CustomDialog mLockDialog;
+    private AlertDialog mDeleteDialog;
+    private AlertDialog mLockDialog;
 
     public ShowDialogTool(OnDialogListener mListener, Context context) {
         this.mListener = mListener;
@@ -38,7 +40,7 @@ public class ShowDialogTool {
      */
     public void showDeleteDialog(int currentPage) {
         if (mDeleteDialog == null) {
-            CustomDialog.Builder builder = new CustomDialog.Builder(mContext);
+            AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
             if (currentPage == 2) {
                 builder.setMessage(R.string.prompt_delete_picture);
             } else {
@@ -49,7 +51,7 @@ public class ShowDialogTool {
                 dialog.dismiss();
                 showWaitingDialog();
 //            doLockFile(R.id.delete);
-                sendToActivity(0);
+                sendToActivity(3);
 //            mInnerHandler.sendEmptyMessage(CustomValue.DELETE_FILE);
             });
 
@@ -57,9 +59,7 @@ public class ShowDialogTool {
                     (dialog, which) -> dialog.dismiss());
             mDeleteDialog = builder.create();
         }
-        if (!mDeleteDialog.isShowing()) {
-            mDeleteDialog.show();
-        }
+        showDialog(mDeleteDialog);
     }
 
     /**
@@ -69,7 +69,7 @@ public class ShowDialogTool {
      */
     public void showLockDialog(int currentPage) {
         if (mLockDialog == null) {
-            CustomDialog.Builder builder = new CustomDialog.Builder(mContext);
+            AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
             if (currentPage == 0) {
                 builder.setMessage(R.string.prompt_lock_video);
             } else {
@@ -87,9 +87,7 @@ public class ShowDialogTool {
                     (dialog, which) -> dialog.dismiss());
             mLockDialog = builder.create();
         }
-        if (!mLockDialog.isShowing()) {
-            mLockDialog.show();
-        }
+        showDialog(mLockDialog);
     }
 
     /**
@@ -132,9 +130,7 @@ public class ShowDialogTool {
             params.width = 500;
             mStopRecordingDialog.getWindow().setAttributes(params);
         }
-        if (!mStopRecordingDialog.isShowing()){
-            mStopRecordingDialog.show();
-        }
+        showDialog(mStopRecordingDialog);
     }
 
     /**
@@ -153,9 +149,7 @@ public class ShowDialogTool {
             params.height = WindowManager.LayoutParams.WRAP_CONTENT;
             loadingDialog.getWindow().setAttributes(params);
         }
-        if (!loadingDialog.isShowing()) {
-            loadingDialog.show();
-        }
+        showDialog(loadingDialog);
     }
 
     private void sendToActivity(int type) {
@@ -180,6 +174,43 @@ public class ShowDialogTool {
         }
         if (mLockDialog != null) {
             mLockDialog.dismiss();
+        }
+    }
+
+    private void showDialog(AlertDialog alertDialog) {
+        if (!alertDialog.isShowing()) {
+            alertDialog.show();
+            setDialogTextSize(alertDialog);
+        }
+    }
+
+    private void setDialogTextSize(AlertDialog builder) {
+        builder.getButton(AlertDialog.BUTTON_POSITIVE).setTextSize(27);
+        builder.getButton(DialogInterface.BUTTON_NEGATIVE).setTextSize(27);
+        try {
+            //获取mAlert对象
+            Field mAlert = AlertDialog.class.getDeclaredField("mAlert");
+            mAlert.setAccessible(true);
+            Object mAlertController = mAlert.get(builder);
+
+            //获取mTitleView并设置大小颜色
+            Field mTitle = mAlertController.getClass().getDeclaredField("mTitleView");
+            mTitle.setAccessible(true);
+            TextView mTitleView = (TextView) mTitle.get(mAlertController);
+            if (mTitleView != null) {
+                mTitleView.setTextSize(30);
+            }
+
+
+            //获取mMessageView并设置大小颜色
+            Field mMessage = mAlertController.getClass().getDeclaredField("mMessageView");
+            mMessage.setAccessible(true);
+            TextView mMessageView = (TextView) mMessage.get(mAlertController);
+            if (mMessageView!=null){
+                mMessageView.setTextSize(27);
+            }
+        } catch (IllegalAccessException | NoSuchFieldException e) {
+            e.printStackTrace();
         }
     }
 }

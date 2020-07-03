@@ -3,24 +3,22 @@ package com.bixin.bxvideolist.view.activity;
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
-import android.content.ServiceConnection;
-import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.IBinder;
 import android.os.Message;
-import android.os.RemoteException;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.view.ViewPager;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 
 import com.bixin.bxvideolist.R;
 import com.bixin.bxvideolist.adapter.HomeRecyclerViewAdapter;
-import com.bixin.bxvideolist.adapter.RecyclerViewAdapter;
 import com.bixin.bxvideolist.adapter.ViewPageAdapter;
 import com.bixin.bxvideolist.model.CustomValue;
 import com.bixin.bxvideolist.model.DvrAIDL;
@@ -29,6 +27,7 @@ import com.bixin.bxvideolist.model.listener.OnDialogListener;
 import com.bixin.bxvideolist.model.listener.OnRecyclerViewItemListener;
 import com.bixin.bxvideolist.model.tools.MediaData;
 import com.bixin.bxvideolist.model.tools.ShowDialogTool;
+import com.bixin.bxvideolist.model.tools.ToastUtils;
 import com.bixin.bxvideolist.model.tools.VideoListOperationTool;
 import com.bixin.bxvideolist.view.customview.CustomRecyclerView;
 import com.bx.carDVR.myaidl.FileListInterface;
@@ -82,16 +81,27 @@ public class HomeActivity extends RxActivity implements View.OnClickListener,
     private VideoListOperationTool mFileTool;
     private LinkApp linkApp;
     private FileListInterface listInterface;
+    private ImageView ivLockVideo;
+    private ImageView ivPhoto;
+    private ImageView ivNormalVideo;
+    private boolean isExit = false;
 
     @Override
     public void doSomething(int type) {
         if (type == 0) {
             doLockFile(R.id.lock);
         } else if (type == 1) {
+            sendBroadcastForStopRecording();
             mViewPager.setVisibility(View.VISIBLE);
-        } else {
+        } else if (type == 2) {
             finish();
+        } else {
+            doLockFile(R.id.delete);
         }
+    }
+    private void sendBroadcastForStopRecording() {
+        Intent intent = new Intent();
+        sendBroadcast(intent);
     }
 
     private static class InnerHandler extends Handler {
@@ -157,12 +167,18 @@ public class HomeActivity extends RxActivity implements View.OnClickListener,
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        int layoutId;
+        if (CustomValue.IS_KD003) {
+            layoutId = R.layout.activity_main_kd003;
+        } else {
+            layoutId = R.layout.activity_main;
+        }
+        setContentView(layoutId);
         init();
         initView();
-        initData();
+//        initData();
         requestPermissions(HomeActivity.this);
-        initData();
+//        initData();
     }
 
     private void get(Map<String, List<String>> map) {
@@ -302,10 +318,18 @@ public class HomeActivity extends RxActivity implements View.OnClickListener,
         ctlNormalVideo = findViewById(R.id.ctl_normal);
         ctlLockVideo = findViewById(R.id.ctl_lock);
         ctlPicture = findViewById(R.id.ctl_picture);
+
         ctlNormalVideo.setOnClickListener(myOnClickListener);
         ctlLockVideo.setOnClickListener(myOnClickListener);
         ctlPicture.setOnClickListener(myOnClickListener);
 //        mViewPager.setOffscreenPageLimit(2);
+        if (CustomValue.IS_KD003) {
+            ivNormalVideo = findViewById(R.id.iv_normal);
+            ivLockVideo = findViewById(R.id.iv_lock);
+            ivPhoto = findViewById(R.id.iv_picture);
+            ivLockVideo.setImageResource(R.drawable.icon_home_cloud_video);
+            ivPhoto.setImageResource(R.drawable.icon_home_photo);
+        }
 
         mViewPager.setCurrentItem(0);
         mViewPager.setVisibility(View.INVISIBLE);
@@ -605,30 +629,62 @@ public class HomeActivity extends RxActivity implements View.OnClickListener,
 
     @SuppressLint("CheckResult")
     public void requestPermissions(Activity activity) {
-
-        String[] strings = {Manifest.permission.READ_EXTERNAL_STORAGE,
+        String[] permissions = {Manifest.permission.READ_EXTERNAL_STORAGE,
                 Manifest.permission.WRITE_EXTERNAL_STORAGE};
-        RxPermissions rxPermission = new RxPermissions(activity);
-        rxPermission.requestEach(strings)
-                .subscribe(new Consumer<Permission>() {
-                    @Override
-                    public void accept(Permission permission) {
-                        if (permission.granted) {// 用户已经同意该权限
+
+        List<String> stringList = new ArrayList<>();
+        for (String s : permissions) {
+            if (ActivityCompat.checkSelfPermission(this, s)
+                    != PackageManager.PERMISSION_GRANTED) {
+                stringList.add(s);
+            }
+        }
+        if (!stringList.isEmpty()) {
+            RxPermissions rxPermission = new RxPermissions(activity);
+            rxPermission.requestEach(permissions)
+                    .subscribe(new Consumer<Permission>() {
+                        @Override
+                        public void accept(Permission permission) {
+                            if (permission.granted) {// 用户已经同意该权限
 //                            initData();
-//                            initDataTest();
-                            Log.d(TAG, permission.name + " is granted.");
-                        } else if (permission.shouldShowRequestPermissionRationale) {
-                            // 用户拒绝了该权限，没有选中『不再询问』（Never ask again）,那么下次再次启动时，还会提示请求权限的对话框
-                            Log.d(TAG, permission.name + " is denied. More info should be " +
-                                    "provided.");
-                            finish();
-                        } else { // 用户拒绝了该权限，并且选中『不再询问』
-                            finish();
-                            Log.d(TAG, permission.name + " is denied.");
+                                initDataTest();
+                                Log.d(TAG, permission.name + " is granted.");
+                            } else if (permission.shouldShowRequestPermissionRationale) {
+                                // 用户拒绝了该权限，没有选中『不再询问』（Never ask again）,那么下次再次启动时，还会提示请求权限的对话框
+                                Log.d(TAG, permission.name + " is denied. More info should be " +
+                                        "provided.");
+                                finish();
+                            } else { // 用户拒绝了该权限，并且选中『不再询问』
+                                finish();
+                                Log.d(TAG, permission.name + " is denied.");
+                            }
                         }
-                    }
-                });
+                    });
+        } else {
+            initData();
+        }
     }
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if (keyCode == KeyEvent.KEYCODE_BACK) {
+            exit();
+            return false;
+        }
+        return super.onKeyDown(keyCode, event);
+    }
+
+    private void exit() {
+        if (!isExit) {
+            isExit = true;
+            ToastUtils.showToast(R.string.exit_app);
+            mInnerHandler.sendEmptyMessageDelayed(CustomValue.HANDLE_EXIT_APP, 2000);
+        } else {
+            finish();
+//            System.exit(0);
+        }
+    }
+
 
     @Override
     protected void onStop() {

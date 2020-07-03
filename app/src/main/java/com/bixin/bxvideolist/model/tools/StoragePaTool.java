@@ -1,5 +1,6 @@
 package com.bixin.bxvideolist.model.tools;
 
+import android.app.Application;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
@@ -20,9 +21,9 @@ public class StoragePaTool {
      * @param isRemoveAble 是否可移除，false返回内部存储，true返回外置sd卡
      * @return
      */
-    public static String getStoragePath(Context mContext, boolean isRemoveAble) {
+    public static String getStoragePath(boolean isRemoveAble) {
         StorageManager mStorageManager =
-                (StorageManager) mContext.getSystemService(Context.STORAGE_SERVICE);
+                (StorageManager) MyApplication.getInstance().getSystemService(Context.STORAGE_SERVICE);
         Class<?> storageVolumeClazz;
         try {
             storageVolumeClazz = Class.forName("android.os.storage.StorageVolume");
@@ -57,7 +58,7 @@ public class StoragePaTool {
             SharedPreferences preferences = otherContext.getSharedPreferences("DVR",
                     Context.MODE_PRIVATE);
             String mDVRPath = preferences.getString("SD_PATH", null);
-            Log.d("storagePath", "getDVRPath: "+mDVRPath);
+            Log.d("storagePath", "getDVRPath: " + mDVRPath);
             return mDVRPath;
         } catch (PackageManager.NameNotFoundException e) {
             Log.e("storagePath", "onCreate:error " + e.getMessage());

@@ -193,6 +193,7 @@ public class MediaData {
 
     public void rescan() {
         String SDCardPath = CustomValue.SDCARD_PATH;
+        Log.d("ag", "rescan:SDCardPath "+SDCardPath);
 //        String SDCardPath = StoragePaTool.getDVRPath();
         List<VideoBean> normalVideoTempList = new ArrayList<>();
         List<VideoBean> impactVideoTempList = new ArrayList<>();

@@ -10,10 +10,10 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bixin.bxvideolist.R;
+import com.bixin.bxvideolist.model.CustomValue;
 import com.bixin.bxvideolist.model.bean.VideoBean;
 import com.bixin.bxvideolist.model.listener.OnRecyclerViewItemListener;
 import com.bixin.bxvideolist.model.tools.GlideTool;
-import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 
 import java.lang.ref.WeakReference;
@@ -158,7 +158,13 @@ public class HomeRecyclerViewAdapter extends RecyclerView.Adapter<HomeRecyclerVi
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        return new ViewHolder(mInflater.inflate(R.layout.item_recyclerview_file_info, parent,
+        int layoutId;
+        if (CustomValue.IS_KD003) {
+            layoutId = R.layout.item_recyclerview_file_info_kd003;
+        } else {
+            layoutId = R.layout.item_recyclerview_file_info;
+        }
+        return new ViewHolder(mInflater.inflate(layoutId, parent,
                 false), this);
     }
 

@@ -16,6 +16,7 @@
     <string name="picture">图片</string>
     <string name="select_all">全选</string>
     <string name="lock">加锁</string>
+    <string name="cloud_video">云视频</string>
     <string name="unlock">解锁</string>
     <string name="delete">删除</string>
     <string name="loading_data">数据加载中···</string>
@@ -24,7 +25,7 @@
     <string name="btn_cannel">取消</string>
     <string name="stop_recording">查看录像文件将会停止录像，是否前往查看?</string>
     <string name="action_settings">Settings</string>
-
+    <string name="video_playback_failed">视频播放失败</string>
     <string name="already_first_video">当前已经是第一个视频</string>
     <string name="already_last_video">当前已经是最后一个视频</string>
     <string name="exit_app">再按一次退出</string>

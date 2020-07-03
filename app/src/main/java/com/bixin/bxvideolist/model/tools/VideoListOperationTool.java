@@ -164,11 +164,11 @@ public class VideoListOperationTool {
                         name = name.substring(0, name.length() - 10) + ".ts";
                     }*/
                     if (ctr == CustomValue.CTR_LOCK) {
-                        path = path.substring(0, path.length() - 3) + "_impact.mp4";
-                        name = name.substring(0, name.length() - 3) + "_impact.mp4";
+                        path = path.substring(0, path.length() - 4) + "_impact.mp4";
+                        name = name.substring(0, name.length() - 4) + "_impact.mp4";
                     } else {
-                        path = path.substring(0, path.length() - 10) + ".mp4";
-                        name = name.substring(0, name.length() - 10) + ".mp4";
+                        path = path.substring(0, path.length() - 11) + ".mp4";
+                        name = name.substring(0, name.length() - 11) + ".mp4";
                     }
                     Log.d(TAG, "fileManagement: " + name);
                     File reNameFile = new File(path);

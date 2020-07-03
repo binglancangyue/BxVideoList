@@ -1,31 +1,21 @@
 package com.bixin.bxvideolist.model.tools;
 
 import android.content.Context;
-import android.graphics.Color;
 import android.util.AttributeSet;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.PopupWindow;
-import android.widget.TextView;
-import android.widget.Toast;
 
 import com.bixin.bxvideolist.R;
 import com.bixin.bxvideolist.model.CustomValue;
 import com.bixin.bxvideolist.model.bean.VideoBean;
-import com.bixin.bxvideolist.view.activity.MyApplication;
+import com.bixin.bxvideolist.model.listener.OnFinishVideoActivityListener;
 
 
 import java.util.List;
 
-import cn.jzvd.JZUtils;
-import cn.jzvd.Jzvd;
 import cn.jzvd.JzvdStd;
-
-import static com.bixin.bxvideolist.model.tools.ToastUtils.showToast;
 
 public class MyJzvdStd extends JzvdStd {
     private ImageView ivNextBtn;
@@ -35,6 +25,7 @@ public class MyJzvdStd extends JzvdStd {
     private int maxLength;
     //    private int normalMaxLength = 0;
 //    private int impactMaxLength = 0;
+    private OnFinishVideoActivityListener activityListener;
     public int type = 0;
     private List<VideoBean> mNormalVideoList;
     private List<VideoBean> mImpactVideoList;
@@ -51,6 +42,10 @@ public class MyJzvdStd extends JzvdStd {
 
     public void setContext(Context context) {
         this.mContext = context;
+    }
+
+    public void setOnFinishVideoActivity(OnFinishVideoActivityListener onFinishVideoActivity) {
+        this.activityListener = onFinishVideoActivity;
     }
 
     public void setData(List<VideoBean> list) {
@@ -78,7 +73,11 @@ public class MyJzvdStd extends JzvdStd {
 
     @Override
     public int getLayoutId() {
-        return R.layout.jz_layout_std;
+        if (CustomValue.IS_KD003) {
+            return R.layout.jz_layout_std_kd003;
+        } else {
+            return R.layout.jz_layout_std;
+        }
     }
 
     @Override
@@ -87,8 +86,15 @@ public class MyJzvdStd extends JzvdStd {
         ivNextBtn = findViewById(R.id.next);
         ivNextBtn.setVisibility(VISIBLE);
         ivPreviousBtn = findViewById(R.id.previous);
+        backButton.setImageResource(R.drawable.jz_click_back_selector);
         ivNextBtn.setOnClickListener(this);
         ivPreviousBtn.setOnClickListener(this);
+    }
+
+    @Override
+    public void setScreenFullscreen() {
+        super.setScreenFullscreen();
+        backButton.setVisibility(VISIBLE);
     }
 
    /* @Override
@@ -102,6 +108,7 @@ public class MyJzvdStd extends JzvdStd {
         super.setScreenNormal();
         Jzvd.setVideoImageDisplayType(Jzvd.VIDEO_IMAGE_DISPLAY_TYPE_ORIGINAL);
     }*/
+
     /**
      * 因为需要更改的start按钮的逻辑在基类Jzvd中,重写onclick,将父类Jzvd和JzvdStd的onclick逻辑都复制了过来
      * 并添加了next和previous按钮
@@ -257,15 +264,15 @@ public class MyJzvdStd extends JzvdStd {
         if (i == R.id.previous || i == R.id.next) {
             // by altair,add next and previous button
             if (mVideoBeanList.size() == 0) {
-                showToast(R.string.not_video);
+                ToastUtils.showToast(R.string.not_video);
                 return;
             }
-            changeData();
+//            changeData();
             if (i == R.id.previous) {
                 mCurrentVideoIndex--;
                 if (mCurrentVideoIndex < 0) {
                     mCurrentVideoIndex = 0;
-                    showToast(R.string.already_first_video);
+                    ToastUtils.showToast(R.string.already_first_video);
                     return;
                 }
             }
@@ -273,7 +280,7 @@ public class MyJzvdStd extends JzvdStd {
                 mCurrentVideoIndex++;
                 if (mCurrentVideoIndex > maxLength) {
                     mCurrentVideoIndex = maxLength;
-                    showToast(R.string.already_last_video);
+                    ToastUtils.showToast(R.string.already_last_video);
                     return;
                 }
             }
@@ -282,12 +289,6 @@ public class MyJzvdStd extends JzvdStd {
             startVideo();
         }
 
-    }
-
-    private void showToast(int msg) {
-        if (mContext != null) {
-            showToast(msg);
-        }
     }
 
     /**
@@ -324,7 +325,9 @@ public class MyJzvdStd extends JzvdStd {
         //使用的start按钮的Visibility值
         ivNextBtn.setVisibility(startBtn);
         ivPreviousBtn.setVisibility(startBtn);
-
+        if (CustomValue.IS_KD003) {
+            fullscreenButton.setVisibility(startBtn);
+        }
         if (mVideoBeanList == null) {
             return;
         }
@@ -373,6 +376,7 @@ public class MyJzvdStd extends JzvdStd {
                 topContainer.setVisibility(View.INVISIBLE);
                 startButton.setVisibility(View.INVISIBLE);
                 ivNextBtn.setVisibility(View.INVISIBLE);
+                fullscreenButton.setVisibility(View.INVISIBLE);
                 ivPreviousBtn.setVisibility(View.INVISIBLE);
                 if (clarityPopWindow != null) {
                     clarityPopWindow.dismiss();
@@ -388,6 +392,10 @@ public class MyJzvdStd extends JzvdStd {
     @Override
     public void onStateError() {
         super.onStateError();
+        ToastUtils.showToast(R.string.video_playback_failed);
+        if (activityListener != null) {
+            activityListener.finishActivity();
+        }
         Log.d(TAG, "onStateError: ");
     }
 
@@ -397,6 +405,9 @@ public class MyJzvdStd extends JzvdStd {
         if (state == STATE_ERROR) {
             ivNextBtn.setVisibility(View.GONE);
             ivPreviousBtn.setVisibility(View.GONE);
+        }
+        if (state == STATE_AUTO_COMPLETE) {
+            fullscreenButton.setVisibility(View.INVISIBLE);
         }
     }
 

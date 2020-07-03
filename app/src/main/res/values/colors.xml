@@ -4,7 +4,7 @@
     <color name="colorPrimaryDark">#00574B</color>
     <color name="colorAccent">#D81B60</color>
     <color name="colorWhite">#FFFFFF</color>
-
+    <color name="colorRed">#ED5353</color>
     <!--透明-->
     <color name="color_transparent100">#00000000</color>
     <color name="color_transparent95">#0D000000</color>

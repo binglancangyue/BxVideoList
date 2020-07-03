@@ -35,6 +35,12 @@
 #把混淆类中的方法名也混淆了
 -useuniqueclassmembernames
 
+# 将.class信息中的类名重新定义为"UnknownFile"字符串，可以随便写
+-renamesourcefileattribute UnknownFile
+
+# 保留源文件名为"UnknownFile"字符串，而非原始的类名，并保留行号
+-keepattributes SourceFile,LineNumberTable
+
 #优化时允许访问并修改有修饰符的类和类的成员
 -allowaccessmodification
 

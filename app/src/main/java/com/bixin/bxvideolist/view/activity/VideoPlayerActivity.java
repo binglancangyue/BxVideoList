@@ -18,16 +18,16 @@ import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.bixin.bxvideolist.R;
 import com.bixin.bxvideolist.adapter.RecyclerViewAdapter;
 import com.bixin.bxvideolist.model.CustomValue;
 import com.bixin.bxvideolist.model.bean.VideoBean;
 import com.bixin.bxvideolist.model.bean.VideoPlayerBean;
+import com.bixin.bxvideolist.model.listener.OnFinishVideoActivityListener;
 import com.bixin.bxvideolist.model.listener.OnRecyclerViewItemListener;
-import com.bixin.bxvideolist.model.tools.MediaData;
 import com.bixin.bxvideolist.model.tools.MyJzvdStd;
+import com.bixin.bxvideolist.model.tools.ToastUtils;
 import com.bumptech.glide.Glide;
 import com.jcodecraeer.xrecyclerview.XRecyclerView;
 import com.trello.rxlifecycle2.android.ActivityEvent;
@@ -49,7 +49,7 @@ import io.reactivex.schedulers.Schedulers;
 
 
 public class VideoPlayerActivity extends RxActivity implements View.OnClickListener,
-        OnRecyclerViewItemListener, XRecyclerView.LoadingListener, RecyclerViewAdapter.RecyclerViewOnItemListener {
+        OnRecyclerViewItemListener, XRecyclerView.LoadingListener, RecyclerViewAdapter.RecyclerViewOnItemListener, OnFinishVideoActivityListener {
     private final static String TAG = "VideoPlayerActivity";
     private Context mContext;
     private MyJzvdStd jcVideoPlayer;
@@ -68,6 +68,11 @@ public class VideoPlayerActivity extends RxActivity implements View.OnClickListe
     private TextView tvNormal;
     private TextView tvLock;
     private boolean isExit = false;
+
+    @Override
+    public void finishActivity() {
+        finish();
+    }
 
     private static class InnerHandler extends Handler {
         private final WeakReference<VideoPlayerActivity> activityWeakReference;
@@ -110,6 +115,7 @@ public class VideoPlayerActivity extends RxActivity implements View.OnClickListe
 //        xRecyclerView = findViewById(R.id.ryc_list);
         jcVideoPlayer = findViewById(R.id.jcv_player);
         jcVideoPlayer.setContext(mContext);
+        jcVideoPlayer.setOnFinishVideoActivity(this);
 //        tvNormal = findViewById(R.id.tv_btn_normal);
 //        tvLock = findViewById(R.id.tv_btn_lock);
 //        tvNormal.setOnClickListener(this);
@@ -315,7 +321,6 @@ public class VideoPlayerActivity extends RxActivity implements View.OnClickListe
     }
 
 
-
     private void updateButtonBG() {
         if (type == CustomValue.VIDEO_TYPE_NORMAL) {
             tvNormal.setSelected(true);
@@ -329,7 +334,7 @@ public class VideoPlayerActivity extends RxActivity implements View.OnClickListe
     private void exit() {
         if (!isExit) {
             isExit = true;
-            Toast.makeText(getApplicationContext(), R.string.exit_app, Toast.LENGTH_SHORT).show();
+            ToastUtils.showToast(R.string.exit_app);
             mInnerHandler.sendEmptyMessageDelayed(CustomValue.HANDLE_EXIT_APP, 2000);
         } else {
             finish();

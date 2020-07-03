@@ -1,2 +1,33 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources></resources>
+<resources>
+    <string name="app_name">影像庫</string>
+    <string name="menu_settings">設置</string>
+    <string name="dialog_title">提示</string>
+    <string name="button_ok">確定</string>
+    <string name="button_cancel">取消</string>
+    <string name="prompt_stop_recorde">查看錄像文件將會停止錄像，是否前往查看?</string>
+    <string name="prompt_lock_video">確定對選中文件加鎖嗎?</string>
+    <string name="prompt_unlock_video">確定解鎖選中的文件嗎?</string>
+    <string name="prompt_delete_video">確定刪除選中的文件嗎?</string>
+    <string name="prompt_delete_picture">確定刪除選中的文件嗎?</string>
+    <string name="dialog_message">操作進行中···</string>
+    <string name="normal_video">一般錄影</string>
+    <string name="lock_video">緊急錄影</string>
+    <string name="picture">照片</string>
+    <string name="select_all">全選</string>
+    <string name="lock">加鎖</string>
+    <string name="unlock">解鎖</string>
+    <string name="delete">刪除</string>
+    <string name="loading_data">數據加載中···</string>
+    <string name="stop_dialog_title">提示</string>
+    <string name="btn_sure">確定</string>
+    <string name="btn_cannel">取消</string>
+    <string name="stop_recording">查看錄像文件將會停止錄像，是否前往查看?</string>
+    <string name="action_settings">Settings</string>
+    <string name="video_playback_failed">視頻播放失敗</string>
+    <string name="cloud_video">雲端視頻</string>
+    <string name="already_first_video">当前已经是第一个视频</string>
+    <string name="already_last_video">当前已经是最后一个视频</string>
+    <string name="exit_app">再按一次退出</string>
+    <string name="not_video">沒有錄像視頻</string>
+</resources>

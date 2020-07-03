@@ -3,8 +3,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
+    android:background="?attr/selectableItemBackground"
     android:layout_height="100dp"
-    android:background="@color/color_transparent_w_95"
     android:orientation="horizontal">
 
     <ImageView
@@ -27,7 +27,7 @@
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"
         android:layout_marginStart="18dp"
-        android:textSize="20sp"
+        android:textSize="@dimen/videoInfoNameTextSize"
         app:layout_constraintBottom_toTopOf="@id/size"
         app:layout_constraintEnd_toStartOf="@id/size"
         app:layout_constraintStart_toEndOf="@id/Thumbnail"
@@ -40,6 +40,7 @@
         android:layout_centerVertical="true"
         android:layout_marginStart="18dp"
         android:visibility="visible"
+        android:textSize="@dimen/videoInfoSizeTextSize"
         app:layout_constraintBottom_toBottomOf="@id/Thumbnail"
         app:layout_constraintStart_toEndOf="@id/Thumbnail"
         app:layout_constraintTop_toBottomOf="@id/name" />
@@ -54,4 +55,5 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         tools:ignore="ContentDescription" />
+
 </android.support.constraint.ConstraintLayout>

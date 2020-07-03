@@ -1,7 +1,9 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:dist="http://schemas.android.com/apk/distribution"
     xmlns:tools="http://schemas.android.com/tools"
-    package="com.bixin.bxvideolist">
+    coreApp="true"
+    package="com.bixin.bxvideolist"
+    android:sharedUserId="android.uid.system">
 
 
     <dist:module dist:instant="true" />

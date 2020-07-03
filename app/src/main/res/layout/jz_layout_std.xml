@@ -39,7 +39,7 @@
         android:layout_height="50dp"
         android:layout_alignParentBottom="true"
         android:background="@drawable/jz_bottom_bg"
-        android:gravity="center_vertical"
+        android:gravity="center"
         android:orientation="horizontal"
         android:visibility="invisible">
 
@@ -51,10 +51,20 @@
             android:layout_alignEnd="@+id/layout_bottom"
             android:paddingLeft="14dp"
             android:paddingRight="14dp"
-            android:visibility="invisible"
             android:scaleType="centerInside"
             android:src="@drawable/jz_enlarge"
+            android:visibility="gone"
             tools:ignore="ObsoleteLayoutParam" />
+
+        <TextView
+            android:id="@+id/total"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="30dp"
+            android:layout_marginEnd="10dp"
+            android:text="00:00"
+            android:textColor="#ffffff"
+            android:textSize="@dimen/videoPlayTimeTextSize" />
 
         <SeekBar
             android:id="@+id/bottom_seek_progress"
@@ -64,8 +74,8 @@
             android:layout_weight="1.0"
             android:background="@null"
             android:max="100"
-            android:maxHeight="1dp"
-            android:minHeight="1dp"
+            android:maxHeight="4dp"
+            android:minHeight="4dp"
             android:paddingLeft="12dp"
             android:paddingTop="8dp"
             android:paddingRight="12dp"
@@ -74,28 +84,25 @@
             android:thumb="@drawable/jz_bottom_seek_thumb" />
 
         <TextView
-            android:id="@+id/total"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:paddingRight="14dp"
-            android:text="00:00"
-            android:textColor="#ffffff" />
-
-        <TextView
             android:id="@+id/clarity"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:layout_marginEnd="30dp"
             android:clickable="true"
-            android:paddingLeft="20dp"
             android:text="clarity"
             android:textAlignment="center"
-            android:textColor="#ffffff" />
+            android:textColor="#ffffff"
+            android:textSize="@dimen/videoPlayTimeTextSize"
+            android:visibility="gone" />
 
         <TextView
+            android:textSize="@dimen/videoPlayTimeTextSize"
             android:id="@+id/current"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="14dp"
+            android:layout_marginStart="10dp"
+            android:layout_marginEnd="30dp"
             android:text="00:00"
             android:textColor="#ffffff" />
     </LinearLayout>
@@ -249,8 +256,8 @@
             android:layout_toEndOf="@+id/back"
             android:ellipsize="end"
             android:maxLines="2"
-            android:textColor="#ffffff"
-            android:textSize="18sp" />
+            android:textSize="@dimen/videoPlayTimeTextSize"
+            android:textColor="#ffffff" />
     </RelativeLayout>
 
     <TextView

@@ -4,6 +4,7 @@ import android.content.Context;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.DividerItemDecoration;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
@@ -16,6 +17,7 @@ import android.widget.LinearLayout;
 
 import com.bixin.bxvideolist.R;
 import com.bixin.bxvideolist.adapter.HomeRecyclerViewAdapter;
+import com.bixin.bxvideolist.model.CustomValue;
 import com.bixin.bxvideolist.view.activity.HomeActivity;
 import com.bumptech.glide.Glide;
 import com.jcodecraeer.xrecyclerview.XRecyclerView;
@@ -64,19 +66,23 @@ public class CustomRecyclerView extends ViewGroup {
 
 //        xRecyclerView.setLoadingMoreProgressStyle(11);
         ((DefaultItemAnimator) xRecyclerView.getItemAnimator()).setSupportsChangeAnimations(false);
-        LinearLayoutManager layoutManager = new LinearLayoutManager(context);
-        layoutManager.setOrientation(XRecyclerView.VERTICAL);
-        xRecyclerView.setLayoutManager(layoutManager);
 
+        if (CustomValue.IS_KD003) {
+            GridLayoutManager gridLayoutManager = new GridLayoutManager(context, 3);
+            xRecyclerView.setLayoutManager(gridLayoutManager);
+        } else {
+            LinearLayoutManager layoutManager = new LinearLayoutManager(context);
+            layoutManager.setOrientation(XRecyclerView.VERTICAL);
+            xRecyclerView.setLayoutManager(layoutManager);
+//            xRecyclerView.addItemDecoration(new CustomDecoration(context, RecyclerView.VERTICAL,
+//                    R.drawable.transparent_dividing_verticall_line, 0));
 
-//        xRecyclerView.addItemDecoration(new CustomDecoration(context, RecyclerView.VERTICAL,
-//                R.drawable.transparent_dividing_verticall_line, 0));
-
-        DividerItemDecoration divider =
-                new DividerItemDecoration(context, DividerItemDecoration.VERTICAL);
-        divider.setDrawable(Objects.requireNonNull(ContextCompat.getDrawable(context,
-                R.drawable.transparent_dividing_verticall_line)));
-        xRecyclerView.addItemDecoration(divider);
+            DividerItemDecoration divider =
+                    new DividerItemDecoration(context, DividerItemDecoration.VERTICAL);
+            divider.setDrawable(Objects.requireNonNull(ContextCompat.getDrawable(context,
+                    R.drawable.transparent_dividing_verticall_line)));
+            xRecyclerView.addItemDecoration(divider);
+        }
         this.addView(constraintLayout);
         this.addView(xRecyclerView);
     }

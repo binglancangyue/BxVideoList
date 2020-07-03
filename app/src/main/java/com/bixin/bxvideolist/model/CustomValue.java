@@ -1,5 +1,7 @@
 package com.bixin.bxvideolist.model;
 
+import com.bixin.bxvideolist.model.tools.StoragePaTool;
+
 public class CustomValue {
     public static final int LOCK_FILE = 2;
     public static final int DELETE_FILE = 3;
@@ -20,7 +22,9 @@ public class CustomValue {
     public final static int CTR_UNLOCK = 2;
 
     public static final String LOCAL_PATH = "/storage/emulated/0/DCIM/Camera";
-    public static final String SDCARD_PATH = "/storage/0000-0000/DVR-BX";//storage/0000-006F/DVR-BX
+    //    public static final String SDCARD_PATH = "/storage/0000-006F/DVR-BX";
+    // storage/0000-006F/DVR-BX
+    public static final String SDCARD_PATH = StoragePaTool.getStoragePath(true);
 
     public static final int VIDEO_TYPE_NORMAL = 0;
     public static final int VIDEO_TYPE_LOCK = 1;
@@ -30,5 +34,7 @@ public class CustomValue {
 
     public static final int HANDLE_EXIT_APP = 1;
     public static final int UPDATE_BUTTON_BG = 2;
+
+    public static final boolean IS_KD003 = false;
 
 }

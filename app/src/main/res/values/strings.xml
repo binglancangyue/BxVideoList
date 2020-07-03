@@ -12,12 +12,14 @@
     <string name="dialog_message">Operation in progress …</string>
     <string name="normal_video">Normal</string>
     <string name="lock_video">Lock</string>
+    <string name="cloud_video">cloud video</string>
     <string name="picture">Picture</string>
     <string name="select_all">Select all</string>
     <string name="lock">Lock</string>
     <string name="unlock">Unlock</string>
     <string name="delete">Delete</string>
     <string name="loading_data">Loading data…</string>
+    <string name="video_playback_failed">Video playback failed</string>
     <string name="stop_dialog_title">提示</string>
     <string name="btn_sure">确定</string>
     <string name="btn_cannel">取消</string>

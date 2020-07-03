@@ -20,5 +20,7 @@
     <dimen name="videoListItemImageWidth">80dp</dimen>
     <dimen name="videoListItemTextViewMargin">5dp</dimen>
     <dimen name="videoListItemTextSize">14sp</dimen>
-
+    <dimen name="videoInfoNameTextSize">20sp</dimen>
+    <dimen name="videoInfoSizeTextSize">18sp</dimen>
+    <dimen name="videoPlayTimeTextSize">23sp</dimen>
 </resources>
