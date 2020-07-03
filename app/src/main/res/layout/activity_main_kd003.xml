@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#1f1f1f"
+    android:orientation="horizontal">
+
+    <LinearLayout
+        android:id="@+id/ctl_normal"
+        style="@style/HomeConstraintLayoutItemStyleKd003"
+        app:layout_constraintHorizontal_weight="1"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toLeftOf="@id/ctl_lock"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <ImageView
+            android:id="@+id/iv_normal"
+            style="@style/HomeIconImageViewStyle"
+            android:layout_width="wrap_content"
+            android:src="@drawable/icon_home_normal" />
+
+        <TextView
+            android:id="@+id/tv_normal"
+            style="@style/HomeButtonTextStyle"
+            android:text="@string/normal_video" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/ctl_lock"
+        style="@style/HomeConstraintLayoutItemStyleKd003"
+        app:layout_constraintBottom_toBottomOf="@id/ctl_normal"
+        app:layout_constraintHorizontal_weight="1"
+        app:layout_constraintLeft_toRightOf="@id/ctl_normal"
+        app:layout_constraintRight_toLeftOf="@id/ctl_picture"
+        app:layout_constraintTop_toTopOf="parent">
+
+
+        <ImageView
+            android:id="@+id/iv_lock"
+            style="@style/HomeIconImageViewStyle"
+            app:srcCompat="@drawable/icon_home_cloud_video" />
+
+        <TextView
+            android:id="@+id/tv_lock"
+            style="@style/HomeButtonTextStyle"
+            android:layout_width="wrap_content"
+            android:text="@string/cloud_video" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/ctl_picture"
+        style="@style/HomeConstraintLayoutItemStyleKd003"
+        app:layout_constraintBottom_toBottomOf="@id/ctl_normal"
+        app:layout_constraintHorizontal_weight="1"
+        app:layout_constraintLeft_toRightOf="@id/ctl_lock"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <ImageView
+            android:id="@+id/iv_picture"
+            style="@style/HomeIconImageViewStyle"
+            app:srcCompat="@drawable/icon_home_photo" />
+
+        <TextView
+            android:id="@+id/tv_picture"
+            style="@style/HomeButtonTextStyle"
+            android:text="@string/picture" />
+
+    </LinearLayout>
+
+    <android.support.v4.view.ViewPager
+        android:id="@+id/viewpager"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/ctl_normal" />
+
+</android.support.constraint.ConstraintLayout>

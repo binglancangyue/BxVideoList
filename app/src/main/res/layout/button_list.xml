@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#3d3d3d"
+    android:orientation="horizontal"
+    android:padding="5dp">
+
+    <Button
+        android:id="@+id/select_all"
+        style="@style/long_click_button_list_text_style"
+        android:layout_marginEnd="5dp"
+        android:text="@string/select_all" />
+
+    <Button
+        android:id="@+id/lock"
+        style="@style/long_click_button_list_text_style"
+        android:layout_marginEnd="5dp"
+        android:text="@string/lock" />
+
+    <Button
+        android:id="@+id/delete"
+        style="@style/long_click_button_list_text_style"
+        android:layout_marginEnd="5dp"
+        android:text="@string/delete" />
+
+    <Button
+        android:id="@+id/cancel"
+        style="@style/long_click_button_list_text_style"
+        android:text="@string/button_cancel" />
+
+</LinearLayout>
+
+    <!--<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="#3d3d3d"
+    android:orientation="horizontal">
+
+    <Button
+        android:id="@+id/selectall"
+        android:layout_width="match_parent"
+        android:layout_height="45dp"
+        android:layout_margin="8dp"
+        android:layout_weight="1"
+        android:background="@drawable/btn_selector"
+        android:lines="1"
+        android:text="@string/select_all"
+        android:textColor="#FFFFFFFF"
+        android:textSize="20dp" />
+
+    <Button
+        android:id="@+id/lock"
+        android:layout_width="match_parent"
+        android:layout_height="45dp"
+        android:layout_margin="8dp"
+        android:layout_weight="1"
+        android:background="@drawable/btn_selector"
+        android:text="@string/lock"
+        android:textColor="#FFFFFFFF"
+        android:textSize="20dp" />
+
+    <Button
+        android:id="@+id/delete"
+        android:layout_width="match_parent"
+        android:layout_height="45dp"
+        android:layout_margin="8dp"
+        android:layout_weight="1"
+        android:background="@drawable/btn_selector"
+        android:text="@string/delete"
+        android:textColor="#FFFFFFFF"
+        android:textSize="20dp" />
+
+    <Button
+        android:id="@+id/cancel"
+        android:layout_width="match_parent"
+        android:layout_height="45dp"
+        android:layout_margin="8dp"
+        android:layout_weight="1"
+        android:background="@drawable/btn_selector"
+        android:text="@string/cancel"
+        android:textColor="#FFFFFFFF"
+        android:textSize="20dp" />-->
+
+    <!--</LinearLayout>-->

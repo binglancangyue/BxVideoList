@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/dialog_bg">
+
+    <TextView
+        android:id="@+id/title"
+        style="@style/dialog_title_style"
+        android:layout_width="wrap_content"
+        android:layout_height="62dp"
+        android:gravity="center"
+        android:text="@string/dialog_title"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/message"
+        style="@style/dialog_message_style"
+        android:layout_width="300dp"
+        android:layout_height="wrap_content"
+        android:background="#ffffff"
+        android:gravity="center"
+        android:minHeight="120dp"
+        android:paddingTop="15dp"
+        android:paddingBottom="10dp"
+        android:text="@string/dialog_message"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/title"
+        app:layout_constraintWidth_percent="0.7" />
+
+    <View
+        android:id="@+id/v_line"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginLeft="2dp"
+        android:layout_marginRight="2dp"
+        android:background="#ffd0d0d0"
+        app:layout_constraintTop_toBottomOf="@id/message" />
+
+    <Button
+        android:id="@+id/positiveButton"
+        style="@style/dialog_positive_button_style"
+        android:layout_width="0dp"
+        android:layout_height="50dp"
+        android:background="@drawable/btn_ok_selector"
+        android:gravity="center"
+        android:text="@string/button_ok"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="@id/message"
+        app:layout_constraintRight_toLeftOf="@id/negativeButton"
+        app:layout_constraintTop_toBottomOf="@id/v_line"
+        app:layout_constraintWidth_percent="0.3" />
+
+    <Button
+        android:id="@+id/negativeButton"
+        style="@style/dialog_negative_button_style"
+        android:layout_width="0dp"
+        android:layout_height="50dp"
+        android:layout_marginStart="10dp"
+        android:background="@drawable/btn_cancel_selector"
+        android:gravity="center"
+        android:text="@string/button_cancel"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toRightOf="@id/positiveButton"
+        app:layout_constraintRight_toRightOf="@id/message"
+        app:layout_constraintTop_toBottomOf="@id/v_line"
+        app:layout_constraintWidth_percent="0.3" />
+
+</android.support.constraint.ConstraintLayout><!--
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:clickable="true"
+    android:orientation="vertical"
+    android:paddingLeft="80dp"
+    android:paddingRight="80dp">
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:background="@drawable/dialog_bg"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/title"
+            style="@style/text_24_ffffff"
+            android:layout_width="fill_parent"
+            android:layout_height="62.0dip"
+            android:gravity="center"
+            android:text="@string/title_alert"
+            android:visibility="visible" />
+
+        <LinearLayout
+            android:id="@+id/content"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center">
+
+            <TextView
+                android:id="@+id/message"
+                style="@style/text_20_666666"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:lineSpacingMultiplier="1.5"
+                android:minHeight="120.0dip"
+                android:paddingLeft="20.0dip"
+                android:paddingTop="15.0dip"
+                android:paddingRight="20.0dip"
+                android:paddingBottom="15.0dip" />
+        </LinearLayout>
+
+        <View
+            android:layout_width="fill_parent"
+            android:layout_height="1.0px"
+            android:layout_marginLeft="2dp"
+            android:layout_marginRight="2dp"
+            android:background="#ffd0d0d0" />
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="80.0dip"
+            android:layout_gravity="bottom"
+            android:layout_marginLeft="0dp"
+            android:layout_marginRight="0dp"
+            android:background="@drawable/dialog_bottom_bg"
+            android:gravity="center"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/positiveButton"
+                style="@style/text_20_ffffff_sdw"
+                android:layout_width="142.5dip"
+                android:layout_height="50.0dip"
+                android:background="@drawable/btn_ok_selector"
+                android:gravity="center"
+                android:text="@string/ok" />
+
+            <Button
+                android:id="@+id/negativeButton"
+                style="@style/text_20_666666_sdw"
+                android:layout_width="142.5dip"
+                android:layout_height="50.0dip"
+                android:layout_marginLeft="50.0dip"
+                android:background="@drawable/btn_cancel_selector"
+                android:gravity="center"
+                android:text="@string/cancel" />
+        </LinearLayout>
+    </LinearLayout>
+</FrameLayout>-->

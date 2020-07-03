@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#008577</color>
+    <color name="colorPrimaryDark">#00574B</color>
+    <color name="colorAccent">#D81B60</color>
+    <color name="colorWhite">#FFFFFF</color>
+
+    <!--透明-->
+    <color name="color_transparent100">#00000000</color>
+    <color name="color_transparent95">#0D000000</color>
+    <color name="color_transparent90">#1A000000</color>
+    <color name="color_transparent85">#26000000</color>
+    <color name="color_transparent80">#33000000</color>
+    <color name="color_transparent75">#40000000</color>
+    <color name="color_transparent70">#4D000000</color>
+    <color name="color_transparent65">#59000000</color>
+    <color name="color_transparent60">#66000000</color>
+    <color name="color_transparent55">#73000000</color>
+    <color name="color_transparent50">#80000000</color>
+
+    <!--透白-->
+    <color name="color_transparent_w_95">#0DFFFFFF</color>
+    <color name="color_transparent_w_90">#1AFFFFFF</color>
+    <color name="color_transparent_w_85">#26FFFFFF</color>
+
+    <color name="colorBtnBG">#FF00A1D7</color>
+    <color name="colorBtnBGPress">#302D2D</color>
+
+    <color name="colorBtnClick">#00574B</color>
+    <color name="colorBtnNotClick">#008577</color>
+
+
+</resources>

@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="200dp"
+    android:orientation="horizontal">
+
+    <ImageView
+        android:id="@+id/Thumbnail"
+        android:layout_width="220dp"
+        android:layout_height="130dp"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="5dp"
+        android:layout_marginBottom="5dp"
+        android:scaleType="centerCrop"
+        app:layout_constraintBottom_toTopOf="@id/name"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:ignore="ContentDescription" />
+
+    <TextView
+        android:id="@+id/name"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_marginTop="5dp"
+        android:gravity="center"
+        android:textSize="20sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="@id/Thumbnail"
+        app:layout_constraintRight_toRightOf="@id/Thumbnail"
+        app:layout_constraintTop_toBottomOf="@id/Thumbnail" />
+
+    <TextView
+        android:id="@+id/size"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_marginStart="18dp"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="@id/Thumbnail"
+        app:layout_constraintStart_toEndOf="@id/Thumbnail"
+        app:layout_constraintTop_toBottomOf="@id/name" />
+
+    <ImageView
+        android:id="@+id/select"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:layout_marginEnd="15dp"
+        android:src="@drawable/selector_rcv_item"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:ignore="ContentDescription" />
+</android.support.constraint.ConstraintLayout>

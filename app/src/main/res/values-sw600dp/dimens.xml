@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="fab_margin">16dp</dimen>
+
+    <dimen name="homeImageViewMargin">15dp</dimen>
+    <dimen name="dialogButtonMargin">10dp</dimen>
+    <dimen name="homeTextViewSize">30sp</dimen>
+    <dimen name="dialogButtonTextSize">21sp</dimen>
+    <dimen name="dialogMessageTextSize">21sp</dimen>
+    <dimen name="dialogTitleTextSize">24sp</dimen>
+
+    <dimen name="homeLayoutMargin">5dp</dimen>
+    <dimen name="homeLayoutPadding">5dp</dimen>
+    <dimen name="homeLayoutButtonHeight">65dp</dimen>
+
+    <dimen name="videoListItemLayoutHeight">65dp</dimen>
+    <dimen name="videoTypeBtnHeight">40dp</dimen>
+    <dimen name="videoListItemImageStart">8dp</dimen>
+    <dimen name="videoListItemImageHeight">45dp</dimen>
+    <dimen name="videoListItemImageWidth">80dp</dimen>
+    <dimen name="videoListItemTextViewMargin">5dp</dimen>
+    <dimen name="videoListItemTextSize">22sp</dimen>
+    <dimen name="videoInfoNameTextSize">24sp</dimen>
+    <dimen name="videoInfoSizeTextSize">22sp</dimen>
+    <dimen name="videoPlayTimeTextSize">23sp</dimen>
+</resources>

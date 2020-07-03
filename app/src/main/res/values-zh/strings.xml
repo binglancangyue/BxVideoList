@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">视频</string>
+    <string name="menu_settings">设置</string>
+    <string name="dialog_title">提示</string>
+    <string name="button_ok">确定</string>
+    <string name="button_cancel">取消</string>
+    <string name="prompt_stop_recorde">查看视频文件将停止录制，是否查看?</string>
+    <string name="prompt_lock_video">确定对选中的视频加锁吗?</string>
+    <string name="prompt_unlock_video">确定解锁选中的视频吗?</string>
+    <string name="prompt_delete_video">确定删除选中的视频吗?</string>
+    <string name="prompt_delete_picture">确定删除选中的图片吗?</string>
+    <string name="dialog_message">操作进行中···</string>
+    <string name="normal_video">普通视频</string>
+    <string name="lock_video">加锁视频</string>
+    <string name="picture">图片</string>
+    <string name="select_all">全选</string>
+    <string name="lock">加锁</string>
+    <string name="unlock">解锁</string>
+    <string name="delete">删除</string>
+    <string name="loading_data">数据加载中···</string>
+    <string name="stop_dialog_title">提示</string>
+    <string name="btn_sure">确定</string>
+    <string name="btn_cannel">取消</string>
+    <string name="stop_recording">查看录像文件将会停止录像，是否前往查看?</string>
+    <string name="action_settings">Settings</string>
+
+    <string name="already_first_video">当前已经是第一个视频</string>
+    <string name="already_last_video">当前已经是最后一个视频</string>
+    <string name="exit_app">再按一次退出</string>
+    <string name="not_video">没有视频</string>
+</resources>
