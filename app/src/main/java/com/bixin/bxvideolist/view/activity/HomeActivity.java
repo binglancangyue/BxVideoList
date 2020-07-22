@@ -101,6 +101,7 @@ public class HomeActivity extends RxActivity implements View.OnClickListener,
     }
     private void sendBroadcastForStopRecording() {
         Intent intent = new Intent();
+        intent.setAction(CustomValue.ACTION_STOP_RECORD);
         sendBroadcast(intent);
     }
 
@@ -167,13 +168,13 @@ public class HomeActivity extends RxActivity implements View.OnClickListener,
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        int layoutId;
+        View view;
         if (CustomValue.IS_KD003) {
-            layoutId = R.layout.activity_main_kd003;
+            view = getLayoutInflater().inflate(R.layout.activity_main_kd003, null);
         } else {
-            layoutId = R.layout.activity_main;
+            view = getLayoutInflater().inflate(R.layout.activity_main, null);
         }
-        setContentView(layoutId);
+        setContentView(view);
         init();
         initView();
 //        initData();
