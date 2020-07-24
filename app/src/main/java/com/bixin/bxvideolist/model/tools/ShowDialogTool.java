@@ -8,6 +8,7 @@ import android.view.WindowManager;
 import android.widget.TextView;
 
 import com.bixin.bxvideolist.R;
+import com.bixin.bxvideolist.model.CustomValue;
 import com.bixin.bxvideolist.model.listener.OnDialogListener;
 import com.bixin.bxvideolist.view.customview.CustomDialog;
 
@@ -180,7 +181,9 @@ public class ShowDialogTool {
     private void showDialog(AlertDialog alertDialog) {
         if (!alertDialog.isShowing()) {
             alertDialog.show();
-            setDialogTextSize(alertDialog);
+            if (CustomValue.IS_3IN) {
+                setDialogTextSize(alertDialog);
+            }
         }
     }
 
@@ -206,7 +209,7 @@ public class ShowDialogTool {
             Field mMessage = mAlertController.getClass().getDeclaredField("mMessageView");
             mMessage.setAccessible(true);
             TextView mMessageView = (TextView) mMessage.get(mAlertController);
-            if (mMessageView!=null){
+            if (mMessageView != null) {
                 mMessageView.setTextSize(27);
             }
         } catch (IllegalAccessException | NoSuchFieldException e) {

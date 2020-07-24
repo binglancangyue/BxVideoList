@@ -36,5 +36,6 @@ public class CustomValue {
     public static final int UPDATE_BUTTON_BG = 2;
 
     public static final boolean IS_KD003 = false;
+    public static final boolean IS_3IN = true;
 
 }
