@@ -4,7 +4,10 @@ import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.view.Gravity;
 import android.view.WindowManager;
+import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.bixin.bxvideolist.R;
@@ -128,7 +131,7 @@ public class ShowDialogTool {
             mStopRecordingDialog.setCanceledOnTouchOutside(false);
             WindowManager.LayoutParams params =
                     mStopRecordingDialog.getWindow().getAttributes();
-            params.width = 500;
+            params.width = 450;
             mStopRecordingDialog.getWindow().setAttributes(params);
         }
         showDialog(mStopRecordingDialog);
@@ -146,7 +149,7 @@ public class ShowDialogTool {
             loadingDialog.setOnKeyListener((dialog, keyCode, event) -> false);
             WindowManager.LayoutParams params =
                     loadingDialog.getWindow().getAttributes();
-            params.width = 500;
+            params.width = 450;
             params.height = WindowManager.LayoutParams.WRAP_CONTENT;
             loadingDialog.getWindow().setAttributes(params);
         }
@@ -188,8 +191,24 @@ public class ShowDialogTool {
     }
 
     private void setDialogTextSize(AlertDialog builder) {
-        builder.getButton(AlertDialog.BUTTON_POSITIVE).setTextSize(27);
-        builder.getButton(DialogInterface.BUTTON_NEGATIVE).setTextSize(27);
+//        builder.getButton(AlertDialog.BUTTON_POSITIVE).setTextSize(27);
+//        builder.getButton(DialogInterface.BUTTON_NEGATIVE).setTextSize(27);
+        Button button_negative = builder.getButton(AlertDialog.BUTTON_NEGATIVE);
+        Button button_positive = builder.getButton(AlertDialog.BUTTON_POSITIVE);
+        button_negative.setTextSize(27);
+        button_positive.setTextSize(27);
+        builder.getWindow().setGravity(Gravity.CENTER);
+        LinearLayout.LayoutParams layoutParams = (LinearLayout.LayoutParams) button_positive.getLayoutParams();
+        LinearLayout.LayoutParams layoutParams1 = (LinearLayout.LayoutParams) button_positive.getLayoutParams();
+        layoutParams.height = 80;
+        layoutParams.width = 90;
+        layoutParams.setMargins(0, 0, 5, 0);
+        layoutParams.gravity = Gravity.CENTER;
+        layoutParams1.gravity = Gravity.CENTER;
+        layoutParams1.height = 80;
+        layoutParams1.width = 90;
+        button_negative.setLayoutParams(layoutParams);
+        button_positive.setLayoutParams(layoutParams1);
         try {
             //获取mAlert对象
             Field mAlert = AlertDialog.class.getDeclaredField("mAlert");
@@ -203,7 +222,6 @@ public class ShowDialogTool {
             if (mTitleView != null) {
                 mTitleView.setTextSize(30);
             }
-
 
             //获取mMessageView并设置大小颜色
             Field mMessage = mAlertController.getClass().getDeclaredField("mMessageView");

@@ -1,10 +1,17 @@
 package com.bixin.bxvideolist.model.tools;
 
+import android.content.ContentResolver;
+import android.content.Intent;
+import android.database.Cursor;
+import android.media.MediaScannerConnection;
+import android.net.Uri;
 import android.os.Environment;
+import android.provider.MediaStore;
 import android.util.Log;
 
 import com.bixin.bxvideolist.model.CustomValue;
 import com.bixin.bxvideolist.model.bean.VideoBean;
+import com.bixin.bxvideolist.view.activity.MyApplication;
 
 import java.io.File;
 import java.text.DecimalFormat;
@@ -37,6 +44,21 @@ public class MediaData {
             size = "";
         } else {
             size = "0BT";
+        }
+        return size;
+    }
+
+    private String getFileSize(long fileSize) {
+        String size;
+        DecimalFormat df = new DecimalFormat("#.00");
+        if (fileSize < 1024) {
+            size = df.format((double) fileSize);
+        } else if (fileSize < 1048576) {
+            size = df.format((double) fileSize / 1024) + "KB";
+        } else if (fileSize < 1073741824) {
+            size = df.format((double) fileSize / 1048576) + "MB";
+        } else {
+            size = df.format((double) fileSize / 1073741824) + "GB";
         }
         return size;
     }
@@ -130,7 +152,7 @@ public class MediaData {
      * @param theFirst
      */
     public void rescan(boolean theFirst) {
-        String SDCardPath = CustomValue.SDCARD_PATH;
+        String SDCardPath = CustomValue.SDCARD_PATH + "/DVR-BX";
         List<VideoBean> normalVideoTempList = new ArrayList<>();
         List<VideoBean> impactVideoTempList = new ArrayList<>();
         List<VideoBean> pictureTempList = new ArrayList<>();
@@ -193,7 +215,7 @@ public class MediaData {
 
     public void rescan() {
         String SDCardPath = CustomValue.SDCARD_PATH;
-        Log.d("ag", "rescan:SDCardPath "+SDCardPath);
+        Log.d("ag", "rescan:SDCardPath " + SDCardPath);
 //        String SDCardPath = StoragePaTool.getDVRPath();
         List<VideoBean> normalVideoTempList = new ArrayList<>();
         List<VideoBean> impactVideoTempList = new ArrayList<>();
@@ -462,4 +484,75 @@ public class MediaData {
         });
 
     }*/
+
+    public void queryData() {
+        queryVideo();
+        queryPicture();
+    }
+
+    private void queryPicture() {
+        Uri mImageUri = MediaStore.Images.Media.EXTERNAL_CONTENT_URI;
+        ContentResolver mContentResolver = MyApplication.getInstance().getContentResolver();
+        String[] s = {
+                MediaStore.Images.Media.DATA, MediaStore.Images.Media.DISPLAY_NAME, MediaStore.Images.Media.SIZE};
+        //只查询jpeg和png的图片
+        Cursor mCursor = mContentResolver.query(mImageUri, s,
+                null, null, MediaStore.Images.Media.DATE_MODIFIED + " desc");
+        VideoBean videoBean;
+        pictureList.clear();
+        if (mCursor != null) {
+            while (mCursor.moveToNext()) {
+                videoBean = new VideoBean();
+                String path = mCursor.getString(0);
+                if (path.contains(CustomValue.SDCARD_PATH + "/DVR-BX")) {
+                    String size = getFileSize(mCursor.getLong(2));
+                    String name = mCursor.getString(1);
+                    videoBean.setPath(path);
+                    videoBean.setName(name);
+                    videoBean.setSize(size);
+                    videoBean.setSelect(false);
+                    pictureList.add(videoBean);
+                    Log.d("TAG", "queryPicture: " + name + "\n");
+                }
+            }
+            mCursor.close();
+        }
+
+    }
+
+    private void queryVideo() {
+        Uri mImageUri = MediaStore.Video.Media.EXTERNAL_CONTENT_URI;
+        ContentResolver mContentResolver = MyApplication.getInstance().getContentResolver();
+        String[] s = {
+                MediaStore.Images.Media.DATA, MediaStore.Images.Media.DISPLAY_NAME, MediaStore.Images.Media.SIZE};
+        Cursor mCursor = mContentResolver.query(mImageUri, s,
+                null, null, MediaStore.Images.Media.DATE_MODIFIED + " desc");
+        VideoBean videoBean;
+        normalVideoList.clear();
+        impactVideoList.clear();
+        if (mCursor != null) {
+            while (mCursor.moveToNext()) {
+                videoBean = new VideoBean();
+                String path = mCursor.getString(0);
+                if (path.contains(CustomValue.SDCARD_PATH + "/DVR-BX")) {
+                    String size = getFileSize(mCursor.getLong(2));
+                    String name = mCursor.getString(1);
+                    videoBean.setPath(path);
+                    videoBean.setName(name);
+                    videoBean.setSize(size);
+                    videoBean.setSelect(false);
+                    Log.d("TAG", "queryVideo: " + name + "\n");
+                    if (name.endsWith(".mp4")) {
+                        if (!name.contains("impact")) {
+                            normalVideoList.add(videoBean);
+                        } else {
+                            impactVideoList.add(videoBean);
+                        }
+                    }
+                }
+            }
+            mCursor.close();
+        }
+    }
+
 }

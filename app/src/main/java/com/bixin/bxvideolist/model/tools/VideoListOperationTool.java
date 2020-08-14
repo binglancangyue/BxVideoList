@@ -36,7 +36,7 @@ public class VideoListOperationTool {
      * @param position 传递的视频的下标
      * @param type     视频类型(加锁和不加锁)
      */
-    public void openVideoPlayer(VideoBean data, int position, int type) {
+/*    public void openVideoPlayer(VideoBean data, int position, int type) {
         Log.d(TAG, "openVideoPlayer: " + type);
         ComponentName componentName = new ComponentName(VIDEO_PLAYER_PACKAGE_NAME,
                 VIDEO_PLAYER_ACTIVITY);
@@ -57,7 +57,7 @@ public class VideoListOperationTool {
 //        bundle.putInt(KEY_VIDEO_TYPE, type);
         intent.putExtras(bundle);
 //        MyApplication.getInstance().startActivity(intent);
-    }
+    }*/
 
     /**
      * 跳转播放器activity
@@ -78,6 +78,27 @@ public class VideoListOperationTool {
         bundle.putParcelable("VideoPlayerBean", videoPlayerBean);
         intent.putExtras(bundle);
         MyApplication.getInstance().startActivity(intent);
+    }
+
+    /**
+     * 跳转播放器activity
+     *
+     * @param data     视频VideoBean
+     * @param position 传递的视频的下标
+     * @param type     视频类型(加锁和不加锁)
+     */
+    public Intent openVideoPlayer(VideoBean data, int position, int type) {
+        Log.d(TAG, "openVideoPlayer: " + type);
+        Intent intent = new Intent(MyApplication.getInstance(), VideoPlayerActivity.class);
+        Bundle bundle = new Bundle();
+        VideoPlayerBean videoPlayerBean = new VideoPlayerBean();
+        videoPlayerBean.setName(data.getName());
+        videoPlayerBean.setPath(data.getPath());
+        videoPlayerBean.setPosition(position);
+        videoPlayerBean.setType(type);
+        bundle.putParcelable("VideoPlayerBean", videoPlayerBean);
+        intent.putExtras(bundle);
+        return intent;
     }
 
 

@@ -85,6 +85,7 @@ public class HomeActivity extends RxActivity implements View.OnClickListener,
     private ImageView ivPhoto;
     private ImageView ivNormalVideo;
     private boolean isExit = false;
+    private boolean isNotShowDialog = true;
 
     @Override
     public void doSomething(int type) {
@@ -99,6 +100,7 @@ public class HomeActivity extends RxActivity implements View.OnClickListener,
             doLockFile(R.id.delete);
         }
     }
+
     private void sendBroadcastForStopRecording() {
         Intent intent = new Intent();
         intent.setAction(CustomValue.ACTION_STOP_RECORD);
@@ -167,6 +169,7 @@ public class HomeActivity extends RxActivity implements View.OnClickListener,
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        setStatusBarVisible(false);
         super.onCreate(savedInstanceState);
         View view;
         if (CustomValue.IS_KD003) {
@@ -178,8 +181,25 @@ public class HomeActivity extends RxActivity implements View.OnClickListener,
         init();
         initView();
 //        initData();
-        requestPermissions(HomeActivity.this);
-//        initData();
+//        requestPermissions(HomeActivity.this);
+        initData();
+    }
+
+    private void setStatusBarVisible(boolean show) {
+        if (!CustomValue.IS_966) {
+            return;
+        }
+        if (show) {
+            int uiFlags = View.SYSTEM_UI_FLAG_LAYOUT_STABLE;
+            uiFlags |= 0x00001000;
+            getWindow().getDecorView().setSystemUiVisibility(uiFlags);
+        } else {
+            int uiFlags = View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+                    | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                    | View.SYSTEM_UI_FLAG_FULLSCREEN;
+            uiFlags |= 0x00001000;
+            getWindow().getDecorView().setSystemUiVisibility(uiFlags);
+        }
     }
 
     private void get(Map<String, List<String>> map) {
@@ -222,7 +242,7 @@ public class HomeActivity extends RxActivity implements View.OnClickListener,
                         doGetVideoData(true);
 //                        bindAIDLService();
                         //之后再加载全部数据
-//                        doGetVideoData(false);
+                        doGetVideoData(false);
                     }
                 });
             }
@@ -303,8 +323,8 @@ public class HomeActivity extends RxActivity implements View.OnClickListener,
         if (mediaData == null) {
             mediaData = new MediaData();
         }
-//        mediaData.rescan(theFirst);
-        mediaData.rescan();
+        mediaData.rescan(theFirst);
+//        mediaData.rescan();
 //        List<VideoBean> videoBeans=new ArrayList<>();
 //        videoBeans.add(new VideoBean("asd",))
         normalVideoList = mediaData.getNormalVideoList();
@@ -489,16 +509,19 @@ public class HomeActivity extends RxActivity implements View.OnClickListener,
             adapter.notifyItemChanged(position + 1);
         } else {
             if (currentPage != 2) {
-                mFileTool.openVideoPlayer(data, position, currentPage, this);
+                isNotShowDialog = false;
+                Intent intent = mFileTool.openVideoPlayer(data, position, currentPage);
+                startActivityForResult(intent, 10086);
             } else {
                 ArrayList<String> picPaths = new ArrayList<>();
                 for (VideoBean videoBean : pictureList) {
                     picPaths.add(videoBean.getPath());
                 }
+                isNotShowDialog = false;
                 Intent intent = new Intent(HomeActivity.this, ShowPictureActivity.class);
                 intent.putExtra("item", position);
                 intent.putStringArrayListExtra("picPaths", picPaths);
-                startActivity(intent);
+                startActivityForResult(intent, 10086);
             }
         }
     }
@@ -667,6 +690,15 @@ public class HomeActivity extends RxActivity implements View.OnClickListener,
     }
 
     @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == 10086) {
+            Log.d(TAG, "onActivityResult: ");
+            isNotShowDialog = true;
+        }
+    }
+
+    @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if (keyCode == KeyEvent.KEYCODE_BACK) {
             exit();
@@ -690,6 +722,9 @@ public class HomeActivity extends RxActivity implements View.OnClickListener,
     @Override
     protected void onStop() {
         super.onStop();
+        if (isNotShowDialog) {
+            finish();
+        }
     }
 
     @Override

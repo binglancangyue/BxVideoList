@@ -102,6 +102,7 @@ public class VideoPlayerActivity extends RxActivity implements View.OnClickListe
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        setStatusBarVisible(false);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_video_player);
         this.mContext = this;
@@ -122,6 +123,23 @@ public class VideoPlayerActivity extends RxActivity implements View.OnClickListe
 //        tvLock.setOnClickListener(this);
 //        updateButtonBG();
 //        initRecyclerView();
+    }
+
+    private void setStatusBarVisible(boolean show) {
+        if (!CustomValue.IS_966) {
+            return;
+        }
+        if (show) {
+            int uiFlags = View.SYSTEM_UI_FLAG_LAYOUT_STABLE;
+            uiFlags |= 0x00001000;
+            getWindow().getDecorView().setSystemUiVisibility(uiFlags);
+        } else {
+            int uiFlags = View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+                    | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                    | View.SYSTEM_UI_FLAG_FULLSCREEN;
+            uiFlags |= 0x00001000;
+            getWindow().getDecorView().setSystemUiVisibility(uiFlags);
+        }
     }
 
     private void initData() {
@@ -337,6 +355,7 @@ public class VideoPlayerActivity extends RxActivity implements View.OnClickListe
             ToastUtils.showToast(R.string.exit_app);
             mInnerHandler.sendEmptyMessageDelayed(CustomValue.HANDLE_EXIT_APP, 2000);
         } else {
+            setResult(10086);
             finish();
 //            System.exit(0);
         }
