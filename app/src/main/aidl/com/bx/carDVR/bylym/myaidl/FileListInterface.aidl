@@ -1,5 +1,5 @@
 // FileListInterface.aidl
-package com.bx.carDVR.myaidl;
+package com.bx.carDVR.bylym.myaidl;
 
 // Declare any non-default types here with import statements
 
@@ -10,4 +10,5 @@ interface FileListInterface {
      */
          Map getVideoList();
          Map getPictureList();
+         boolean isRecording();
 }

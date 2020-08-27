@@ -23,4 +23,7 @@
     <dimen name="videoInfoNameTextSize">24sp</dimen>
     <dimen name="videoInfoSizeTextSize">22sp</dimen>
     <dimen name="videoPlayTimeTextSize">23sp</dimen>
+    <dimen name="videoInfoHeight">100dp</dimen>
+    <dimen name="videoImageWidth">160dp</dimen>
+    <dimen name="videoImageHeight">90dp</dimen>
 </resources>

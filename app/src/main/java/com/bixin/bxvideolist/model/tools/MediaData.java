@@ -153,6 +153,7 @@ public class MediaData {
      */
     public void rescan(boolean theFirst) {
         String SDCardPath = CustomValue.SDCARD_PATH + "/DVR-BX";
+        Log.d("test11", "rescan: "+SDCardPath);
         List<VideoBean> normalVideoTempList = new ArrayList<>();
         List<VideoBean> impactVideoTempList = new ArrayList<>();
         List<VideoBean> pictureTempList = new ArrayList<>();

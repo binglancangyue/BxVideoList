@@ -37,5 +37,5 @@ public class CustomValue {
 
     public static final boolean IS_KD003 = false;
     public static final boolean IS_3IN = false;
-    public static final boolean IS_966 = true;
+    public static final boolean IS_966 = false;
 }

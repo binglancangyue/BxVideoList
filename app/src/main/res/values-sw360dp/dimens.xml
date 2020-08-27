@@ -4,14 +4,14 @@
 
     <dimen name="homeImageViewMargin">15dp</dimen>
     <dimen name="dialogButtonMargin">10dp</dimen>
-    <dimen name="homeTextViewSize">19sp</dimen>
+    <dimen name="homeTextViewSize">17sp</dimen>
     <dimen name="dialogButtonTextSize">20sp</dimen>
     <dimen name="dialogMessageTextSize">20sp</dimen>
     <dimen name="dialogTitleTextSize">24sp</dimen>
 
     <dimen name="homeLayoutMargin">5dp</dimen>
-    <dimen name="homeLayoutPadding">10dp</dimen>
-    <dimen name="homeLayoutButtonHeight">60dp</dimen>
+    <dimen name="homeLayoutPadding">5dp</dimen>
+    <dimen name="homeLayoutButtonHeight">40dp</dimen>
 
     <dimen name="videoListItemLayoutHeight">65dp</dimen>
     <dimen name="videoTypeBtnHeight">40dp</dimen>
@@ -20,9 +20,8 @@
     <dimen name="videoListItemImageWidth">80dp</dimen>
     <dimen name="videoListItemTextViewMargin">5dp</dimen>
     <dimen name="videoListItemTextSize">14sp</dimen>
-    <dimen name="videoInfoNameTextSize">20sp</dimen>
-    <dimen name="videoInfoSizeTextSize">18sp</dimen>
-    <dimen name="videoInfoHeight">100dp</dimen>
-    <dimen name="videoImageWidth">160dp</dimen>
-    <dimen name="videoImageHeight">90dp</dimen>
+    <dimen name="videoInfoHeight">80dp</dimen>
+    <dimen name="videoImageWidth">128dp</dimen>
+    <dimen name="videoImageHeight">72dp</dimen>
+
 </resources>
