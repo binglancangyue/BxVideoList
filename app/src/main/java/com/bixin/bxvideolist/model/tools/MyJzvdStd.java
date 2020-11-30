@@ -6,6 +6,7 @@ import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 
 import com.bixin.bxvideolist.R;
 import com.bixin.bxvideolist.model.CustomValue;
@@ -20,6 +21,7 @@ import cn.jzvd.JzvdStd;
 public class MyJzvdStd extends JzvdStd {
     private ImageView ivNextBtn;
     private ImageView ivPreviousBtn;
+    private ImageView ivHuaZhong;
     private List<VideoBean> mVideoBeanList;
     private int mCurrentVideoIndex = 0;
     private int maxLength;
@@ -30,6 +32,7 @@ public class MyJzvdStd extends JzvdStd {
     private List<VideoBean> mNormalVideoList;
     private List<VideoBean> mImpactVideoList;
     private Context mContext;
+    private LinearLayout mLinearLayout;
 
 
     public MyJzvdStd(Context context) {
@@ -83,18 +86,45 @@ public class MyJzvdStd extends JzvdStd {
     @Override
     public void init(Context context) {
         super.init(context);
+        mLinearLayout = findViewById(R.id.ll_status_bar);
+        ivHuaZhong = findViewById(R.id.iv_huazhonghua);
         ivNextBtn = findViewById(R.id.next);
         ivNextBtn.setVisibility(VISIBLE);
         ivPreviousBtn = findViewById(R.id.previous);
-        backButton.setImageResource(R.drawable.jz_click_back_selector);
+//        backButton.setImageResource(R.drawable.jz_click_back_selector);
+        backButton.setVisibility(VISIBLE);
         ivNextBtn.setOnClickListener(this);
         ivPreviousBtn.setOnClickListener(this);
+        fullscreenButton.setEnabled(false);
+    }
+
+    @Override
+    public void setScreenNormal() {
+        super.setScreenNormal();
+        fullscreenButton.setImageResource(R.drawable.btn_zoom_out);
+        backButton.setVisibility(View.GONE);
+        tinyBackImageView.setVisibility(View.INVISIBLE);
+        changeStartButtonSize((int) getResources().getDimension(R.dimen.jz_start_button_w_h_normal));
+        batteryTimeLayout.setVisibility(View.GONE);
+        clarity.setVisibility(View.GONE);
     }
 
     @Override
     public void setScreenFullscreen() {
         super.setScreenFullscreen();
-        backButton.setVisibility(VISIBLE);
+        //进入全屏之后要保证原来的播放状态和ui状态不变，改变个别的ui
+        fullscreenButton.setImageResource(R.drawable.btn_zoom_out);
+        backButton.setVisibility(View.VISIBLE);
+        tinyBackImageView.setVisibility(View.INVISIBLE);
+        batteryTimeLayout.setVisibility(View.GONE);
+        if (jzDataSource.urlsMap.size() == 1) {
+            clarity.setVisibility(GONE);
+        } else {
+            clarity.setText(jzDataSource.getCurrentKey().toString());
+            clarity.setVisibility(View.VISIBLE);
+        }
+        changeStartButtonSize((int) getResources().getDimension(R.dimen.jz_start_button_w_h_fullscreen));
+        setSystemTimeAndBattery();
     }
 
    /* @Override
@@ -259,7 +289,10 @@ public class MyJzvdStd extends JzvdStd {
             addTextureView();
             onStatePreparing();
         }*/
-
+        if (i == R.id.back) {
+            Log.d(TAG, "onClick:back ");
+            activityListener.finishActivity();
+        }
 
         if (i == R.id.previous || i == R.id.next) {
             // by altair,add next and previous button
@@ -287,6 +320,7 @@ public class MyJzvdStd extends JzvdStd {
             setUp(mVideoBeanList.get(mCurrentVideoIndex).getPath(),
                     mVideoBeanList.get(mCurrentVideoIndex).getName());
             startVideo();
+            gotoScreenFullscreen();
         }
 
     }
@@ -325,6 +359,9 @@ public class MyJzvdStd extends JzvdStd {
         //使用的start按钮的Visibility值
         ivNextBtn.setVisibility(startBtn);
         ivPreviousBtn.setVisibility(startBtn);
+        ivHuaZhong.setVisibility(startBtn);
+        backButton.setVisibility(startBtn);
+        mLinearLayout.setVisibility(startBtn);
         if (CustomValue.IS_KD003) {
             fullscreenButton.setVisibility(startBtn);
         }
@@ -372,10 +409,13 @@ public class MyJzvdStd extends JzvdStd {
                 && state != STATE_ERROR
                 && state != STATE_AUTO_COMPLETE) {
             post(() -> {
+                backButton.setVisibility(INVISIBLE);
+                ivHuaZhong.setVisibility(INVISIBLE);
                 bottomContainer.setVisibility(View.INVISIBLE);
                 topContainer.setVisibility(View.INVISIBLE);
                 startButton.setVisibility(View.INVISIBLE);
                 ivNextBtn.setVisibility(View.INVISIBLE);
+                mLinearLayout.setVisibility(INVISIBLE);
                 fullscreenButton.setVisibility(View.INVISIBLE);
                 ivPreviousBtn.setVisibility(View.INVISIBLE);
                 if (clarityPopWindow != null) {
@@ -402,13 +442,32 @@ public class MyJzvdStd extends JzvdStd {
     @Override
     public void updateStartImage() {
         super.updateStartImage();
+        Log.d(TAG, "updateStartImage: state " + state);
         if (state == STATE_ERROR) {
             ivNextBtn.setVisibility(View.GONE);
             ivPreviousBtn.setVisibility(View.GONE);
+            mLinearLayout.setVisibility(View.GONE);
         }
+
         if (state == STATE_AUTO_COMPLETE) {
-            fullscreenButton.setVisibility(View.INVISIBLE);
+            activityListener.finishActivity();
         }
+
+        if (state == STATE_PLAYING) {
+            startButton.setVisibility(VISIBLE);
+            startButton.setImageResource(R.drawable.btn_pause);
+            replayTextView.setVisibility(GONE);
+        } else if (state == STATE_PAUSE) {
+            startButton.setImageResource(R.drawable.btn_play);
+            replayTextView.setVisibility(GONE);
+        }
+    }
+
+    private void aa(long value) {
+        long time = progressBar.getProgress() * getDuration() / 100;
+        Log.d(TAG, "aa: time " + time);
+        time = time + value;
+        mediaInterface.seekTo(time);
     }
 
 }

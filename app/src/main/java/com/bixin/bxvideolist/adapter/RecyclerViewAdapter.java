@@ -1,9 +1,9 @@
 package com.bixin.bxvideolist.adapter;
 
 import android.content.Context;
-import android.support.annotation.NonNull;
-import android.support.v7.widget.RecyclerView;
-import android.util.Log;
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.RecyclerView;
+
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,13 +12,11 @@ import android.widget.TextView;
 
 import com.bixin.bxvideolist.R;
 import com.bixin.bxvideolist.model.bean.VideoBean;
-import com.bixin.bxvideolist.model.listener.OnRecyclerViewItemListener;
 import com.bixin.bxvideolist.model.tools.GlideTool;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 
 
-import java.lang.ref.WeakReference;
 import java.util.List;
 
 public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapter.ViewHolder> {

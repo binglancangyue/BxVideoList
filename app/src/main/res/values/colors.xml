@@ -28,6 +28,12 @@
 
     <color name="colorBtnClick">#00574B</color>
     <color name="colorBtnNotClick">#008577</color>
-
-
+    <color name="statusBarColor">#4b5159</color>
+    <color name="colorBlack">#000000</color>
+    <color name="kd003Black">#1f1f1f</color>
+    <color name="kd003BtnColor">#fe9557</color>
+    <color name="kd003BtnPressColor">#bf7041</color>
+    <color name="colorKd003Red">#e6654e</color>
+    <color name="colorToastBG">#333333</color>
+    <color name="colorChecked">#e6654e</color>
 </resources>

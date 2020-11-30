@@ -5,6 +5,7 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.view.Gravity;
+import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.LinearLayout;
@@ -100,9 +101,39 @@ public class ShowDialogTool {
     public void showStopRecordingDialog() {
         if (mStopRecordingDialog == null) {
             AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
-            builder.setTitle(R.string.stop_dialog_title);
-            builder.setMessage(mContext.getText(R.string.stop_recording));
+            View view = View.inflate(mContext, R.layout.dialog_layout, null);
+            builder.setView(view);
+            TextView title = view.findViewById(R.id.tv_dialog_title);
+            TextView message = view.findViewById(R.id.tv_dialog_message);
+            TextView negativeButton = view.findViewById(R.id.tv_dialog_cancel);
+            TextView positiveButton = view.findViewById(R.id.tv_dialog_ok);
+            title.setText(R.string.stop_dialog_title);
+            message.setText(R.string.stop_recording);
+            negativeButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    mStopRecordingDialog.dismiss();
+//                    finish();
+                    sendToActivity(2);
+                }
+            });
+            positiveButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    mStopRecordingDialog.dismiss();
+//                    mViewPager.setVisibility(View.VISIBLE);
+                    sendToActivity(1);
+                }
+            });
             builder.setOnCancelListener(new DialogInterface.OnCancelListener() {
+                @Override
+                public void onCancel(DialogInterface dialogInterface) {
+                    mStopRecordingDialog.dismiss();
+//                    finish();
+                    sendToActivity(2);
+                }
+            });
+/*            builder.setOnCancelListener(new DialogInterface.OnCancelListener() {
                 @Override
                 public void onCancel(DialogInterface dialogInterface) {
                     mStopRecordingDialog.dismiss();
@@ -126,16 +157,22 @@ public class ShowDialogTool {
                     sendToActivity(2);
 
                 }
-            });
+            });*/
             mStopRecordingDialog = builder.create();
             mStopRecordingDialog.setCanceledOnTouchOutside(false);
-            WindowManager.LayoutParams params =
-                    mStopRecordingDialog.getWindow().getAttributes();
-            params.width = 450;
-            mStopRecordingDialog.getWindow().setAttributes(params);
         }
-        showDialog(mStopRecordingDialog);
+//        showDialog(mStopRecordingDialog);
+        showAlertDialog(mStopRecordingDialog);
+
     }
+    private void showAlertDialog(AlertDialog alertDialog) {
+        alertDialog.show();
+        WindowManager.LayoutParams params =
+                alertDialog.getWindow().getAttributes();
+        params.width = (int) mContext.getResources().getDimension(R.dimen.kd003DialogWidth);
+        alertDialog.getWindow().setAttributes(params);
+    }
+
 
     /**
      * 显示正在等待的Dialog

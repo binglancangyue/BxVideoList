@@ -5,6 +5,7 @@ import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.load.resource.bitmap.CenterCrop;
 import com.bumptech.glide.request.RequestOptions;
 
 public class GlideTool {
@@ -24,6 +25,18 @@ public class GlideTool {
                 .apply(options)
                 .thumbnail(thumbnail)
                 .diskCacheStrategy(DiskCacheStrategy.AUTOMATIC)
+                .into(imageView);
+    }
+
+    public static <T> void load(Context context,
+                                T drawable, ImageView imageView, float thumbnail,
+                                RequestOptions options,String s) {
+        Glide.with(context)
+                .load(drawable)
+                .apply(options)
+                .thumbnail(thumbnail)
+                .diskCacheStrategy(DiskCacheStrategy.AUTOMATIC)
+                .transform(new GlideRoundTransform(context,20))
                 .into(imageView);
     }
 }

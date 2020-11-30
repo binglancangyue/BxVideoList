@@ -1,8 +1,8 @@
 package com.bixin.bxvideolist.adapter;
 
 import android.content.Context;
-import android.support.annotation.NonNull;
-import android.support.v7.widget.RecyclerView;
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -185,7 +185,7 @@ public class HomeRecyclerViewAdapter extends RecyclerView.Adapter<HomeRecyclerVi
             holder.tvName.setText(mData.get(position).getName());
             holder.tvSize.setText(mData.get(position).getSize());
 
-            GlideTool.load(mContext, mData.get(position).getPath(), holder.ivImg, 0.2f, options);
+            GlideTool.load(mContext, mData.get(position).getPath(), holder.ivImg, 0.2f, options,null);
 //            if (mData.get(position).getSelect()) {
 //                Glide.with(mContext).load(R.drawable.selected).into(holder.ivSelect);
 //            } else {
@@ -232,7 +232,7 @@ public class HomeRecyclerViewAdapter extends RecyclerView.Adapter<HomeRecyclerVi
             tvSize = itemView.findViewById(R.id.size);
             ivSelect = itemView.findViewById(R.id.select);
             itemView.setOnClickListener(mOnClickListener);
-            itemView.setOnLongClickListener(mOnLongClickListener);
+//            itemView.setOnLongClickListener(mOnLongClickListener);
             WeakReference<HomeRecyclerViewAdapter> weakReference = new WeakReference<>(adapter);
             mAdapter = weakReference.get();
         }

@@ -8,16 +8,25 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.content.pm.PackageManager;
+import android.database.ContentObserver;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
 import android.os.RemoteException;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.view.ViewPager;
+
+import androidx.annotation.RequiresApi;
+import androidx.core.app.ActivityCompat;
+import androidx.viewpager.widget.ViewPager;
+
+import android.provider.Settings;
+import android.telephony.TelephonyManager;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 
@@ -43,6 +52,7 @@ import com.trello.rxlifecycle2.components.RxActivity;
 import java.io.File;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -90,6 +100,11 @@ public class HomeActivity extends RxActivity implements View.OnClickListener,
     private boolean isNotShowDialog = true;
     private DvrAIDL dvrAIDL;
     private FileListInterface listInterface;
+    private static final String CAMERA_RECORD_STATUS = "camera_record_status";
+    private boolean isRecording = false;
+    private LinearLayout parent;
+    private final int[] picture = {R.drawable.btn_all_video, R.drawable.btn_cloud_video, R.drawable.btn_photo};
+    private int state = 1;
 
     @Override
     public void doSomething(int type) {
@@ -153,13 +168,20 @@ public class HomeActivity extends RxActivity implements View.OnClickListener,
                         break;
                     case 7:
                         activity.normalVideoRecyclerView.setHasButton(true);
-
                         break;
+                    case 9:
+                        activity.updatePicture();
+                        break;
+
                     default:
                         break;
                 }
             }
         }
+    }
+
+    private void updatePicture() {
+        parent.setBackgroundResource(picture[currentPage]);
     }
 
     private void loadingDialogDismiss() {
@@ -171,9 +193,17 @@ public class HomeActivity extends RxActivity implements View.OnClickListener,
                 pictureList);
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        setStatusBarVisible(false);
+//        if (CustomValue.IS_3IN) {
+//            getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
+//                    WindowManager.LayoutParams.FLAG_FULLSCREEN);
+//        }
+        Window window = getWindow();
+        window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+        window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+        window.setStatusBarColor(getResources().getColor(R.color.statusBarColor));
         super.onCreate(savedInstanceState);
         View view;
         if (CustomValue.IS_KD003) {
@@ -182,11 +212,13 @@ public class HomeActivity extends RxActivity implements View.OnClickListener,
             view = getLayoutInflater().inflate(R.layout.activity_main, null);
         }
         setContentView(view);
+        hideNavigationBar();
         init();
         initView();
 //        initData();
 //        requestPermissions(HomeActivity.this);
         initData();
+
     }
 
     private void setStatusBarVisible(boolean show) {
@@ -230,14 +262,40 @@ public class HomeActivity extends RxActivity implements View.OnClickListener,
         mDialogTool = new ShowDialogTool(this, this);
         mFileTool = new VideoListOperationTool();
         compositeDisposable = new CompositeDisposable();
-        if (CustomValue.IS_3IN) {
-            bindAIDLService();
+//        if (CustomValue.IS_3IN) {
+//            bindAIDLService();
+//        }
+        state = 1;
+        try {
+            state = Settings.Global.getInt(getContentResolver(), CAMERA_RECORD_STATUS);
+            Log.d(TAG, "dvr state : " + state);
+        } catch (Settings.SettingNotFoundException e) {
+            e.printStackTrace();
+            Log.e(TAG, "dvr state  error: " + e.getLocalizedMessage());
         }
     }
+
+/*    private final ContentObserver recordState = new ContentObserver(null) {
+        @Override
+        public void onChange(boolean selfChange) {
+            super.onChange(selfChange);
+            isRecording = selfChange;
+            try {
+                int state = Settings.Global.getInt(getContentResolver(), CAMERA_RECORD_STATUS);
+                Log.d(TAG, "onChange: ");
+            } catch (Settings.SettingNotFoundException e) {
+                e.printStackTrace();
+            }
+            Log.d(TAG, "gps onChange: " + isRecording);
+        }
+    };*/
 
     private void initData() {
         if (!CustomValue.IS_3IN) {
             mDialogTool.showStopRecordingDialog();
+        }
+        if (mediaData == null) {
+            mediaData = new MediaData();
         }
         getWindow().getDecorView().post(new Runnable() {
             @Override
@@ -327,9 +385,6 @@ public class HomeActivity extends RxActivity implements View.OnClickListener,
      * 获取本地数据
      */
     private void getData(boolean theFirst) {
-        if (mediaData == null) {
-            mediaData = new MediaData();
-        }
         mediaData.rescan(theFirst);
 //        mediaData.rescan();
 //        List<VideoBean> videoBeans=new ArrayList<>();
@@ -346,23 +401,38 @@ public class HomeActivity extends RxActivity implements View.OnClickListener,
         ctlNormalVideo = findViewById(R.id.ctl_normal);
         ctlLockVideo = findViewById(R.id.ctl_lock);
         ctlPicture = findViewById(R.id.ctl_picture);
-
+        parent = findViewById(R.id.ll_parent);
         ctlNormalVideo.setOnClickListener(myOnClickListener);
         ctlLockVideo.setOnClickListener(myOnClickListener);
         ctlPicture.setOnClickListener(myOnClickListener);
 //        mViewPager.setOffscreenPageLimit(2);
         if (CustomValue.IS_KD003) {
-            ivNormalVideo = findViewById(R.id.iv_normal);
-            ivLockVideo = findViewById(R.id.iv_lock);
-            ivPhoto = findViewById(R.id.iv_picture);
-            ivLockVideo.setImageResource(R.drawable.icon_home_cloud_video);
-            ivPhoto.setImageResource(R.drawable.icon_home_photo);
+//            ivNormalVideo = findViewById(R.id.iv_normal);
+//            ivLockVideo = findViewById(R.id.iv_lock);
+//            ivPhoto = findViewById(R.id.iv_picture);
+//            ivLockVideo.setImageResource(R.drawable.icon_home_cloud_video);
+//            ivPhoto.setImageResource(R.drawable.icon_home_photo);
         }
 
         mViewPager.setCurrentItem(0);
         mViewPager.setVisibility(View.INVISIBLE);
         changeColor(0);
         setOnPageChangeListener();
+
+        if (state == 1) {
+            mDialogTool.showStopRecordingDialog();
+            View decorView = getWindow().getDecorView();
+            decorView.setSystemUiVisibility(
+//                    View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+                    View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+                            | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                            | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+                            | View.SYSTEM_UI_FLAG_FULLSCREEN
+                            | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
+        } else {
+            mViewPager.setVisibility(View.VISIBLE);
+        }
+
     }
 
     private void initPagerItemView() {
@@ -619,6 +689,7 @@ public class HomeActivity extends RxActivity implements View.OnClickListener,
                 currentPage = 2;
                 break;
         }
+        mInnerHandler.sendEmptyMessage(9);
     }
 
     private void doLockFile(int btnId) {
@@ -768,6 +839,28 @@ public class HomeActivity extends RxActivity implements View.OnClickListener,
 
     };
 
+    private void hideNavigationBar() {
+/*        int uiFlags = View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+                | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION;
+        uiFlags |= 0x00001000;
+        getWindow().getDecorView().setSystemUiVisibility(uiFlags);*/
+        View decorView = getWindow().getDecorView();
+        decorView.setSystemUiVisibility(
+//                    View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+                View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+                        | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                        | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+                        | View.SYSTEM_UI_FLAG_FULLSCREEN
+                        | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
+    }
+
+    private void showNavigationBar() {
+        View decorView = getWindow().getDecorView();
+        int uiOptions = View.SYSTEM_UI_FLAG_VISIBLE;
+        decorView.setSystemUiVisibility(uiOptions);
+    }
+
     @Override
     protected void onStop() {
         super.onStop();
@@ -789,8 +882,23 @@ public class HomeActivity extends RxActivity implements View.OnClickListener,
             compositeDisposable = null;
         }
         loadingDialogDismiss();
-        if (CustomValue.IS_3IN) {
-            unBingAIDLService();
+//        if (CustomValue.IS_3IN) {
+//            unBingAIDLService();
+//        }
+    }
+
+    @Override
+    public void onWindowFocusChanged(boolean hasFocus) {
+        super.onWindowFocusChanged(hasFocus);
+        if (hasFocus && Build.VERSION.SDK_INT >= 19) {
+            View decorView = getWindow().getDecorView();
+            decorView.setSystemUiVisibility(
+//                    View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+                    View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+                            | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                            | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+                            | View.SYSTEM_UI_FLAG_FULLSCREEN
+                            | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
         }
     }
 }

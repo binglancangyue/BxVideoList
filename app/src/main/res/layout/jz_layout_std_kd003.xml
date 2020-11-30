@@ -15,6 +15,14 @@
     </FrameLayout>
 
     <ImageView
+        android:layout_width="@dimen/jz_start_button_w_h_normal"
+        android:layout_height="@dimen/jz_start_button_w_h_normal"
+        android:layout_alignParentEnd="true"
+        android:layout_centerVertical="true"
+        android:layout_marginEnd="30dp"
+        android:src="@drawable/btn_screenshot" />
+
+    <ImageView
         android:id="@+id/thumb"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -38,26 +46,26 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
+        android:background="#4D000000"
         android:orientation="vertical">
 
         <LinearLayout
             android:id="@+id/start_layout"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:layout_marginStart="10dp"
-            android:layout_marginEnd="10dp"
             android:gravity="center"
             android:minWidth="300dp"
             android:minHeight="70dp"
             android:orientation="horizontal">
 
             <ImageView
+                android:id="@+id/iv_huazhonghua"
                 android:layout_width="@dimen/jz_start_button_w_h_normal"
                 android:layout_height="@dimen/jz_start_button_w_h_normal"
                 android:layout_marginEnd="60dp"
-                android:src="@drawable/jz_enlarge"
-                android:visibility="invisible"
+                android:src="@drawable/btn_out"
+                android:visibility="visible"
                 tools:ignore="ObsoleteLayoutParam" />
 
             <ImageView
@@ -65,7 +73,7 @@
                 android:layout_width="@dimen/jz_start_button_w_h_normal"
                 android:layout_height="@dimen/jz_start_button_w_h_normal"
                 android:padding="5dp"
-                android:src="@drawable/jz_backward_icon" />
+                android:src="@drawable/btn_fast_rewind" />
 
             <ImageView
                 android:id="@+id/start"
@@ -73,21 +81,21 @@
                 android:layout_height="@dimen/jz_start_button_w_h_normal"
                 android:layout_marginStart="60dp"
                 android:layout_marginEnd="60dp"
-                android:src="@drawable/jz_click_play_selector" />
+                android:src="@drawable/btn_play" />
 
             <ImageView
                 android:id="@+id/next"
                 android:layout_width="@dimen/jz_start_button_w_h_normal"
                 android:layout_height="@dimen/jz_start_button_w_h_normal"
                 android:padding="5dp"
-                android:src="@drawable/jz_forward_icon" />
+                android:src="@drawable/btn_fast_forward" />
 
             <ImageView
                 android:id="@+id/fullscreen"
                 android:layout_width="@dimen/jz_start_button_w_h_normal"
                 android:layout_height="@dimen/jz_start_button_w_h_normal"
                 android:layout_marginStart="60dp"
-                android:src="@drawable/jz_enlarge"
+                android:src="@drawable/btn_zoom_out"
                 android:visibility="visible"
                 tools:ignore="ObsoleteLayoutParam" />
         </LinearLayout>
@@ -106,21 +114,21 @@
         <LinearLayout
             android:id="@+id/layout_bottom"
             android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:background="@drawable/jz_bottom_bg"
+            android:layout_height="65dp"
             android:gravity="center"
             android:orientation="horizontal"
+            android:paddingHorizontal="50dp"
             android:visibility="invisible">
 
-
             <TextView
-                android:id="@+id/total"
+                android:id="@+id/current"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="30dp"
                 android:layout_marginEnd="10dp"
                 android:text="00:00"
-                android:textColor="#ffffff" />
+                android:textColor="#ffffff"
+                android:textSize="20sp" />
 
             <SeekBar
                 android:id="@+id/bottom_seek_progress"
@@ -130,13 +138,13 @@
                 android:layout_weight="1.0"
                 android:background="@null"
                 android:max="100"
-                android:maxHeight="4dp"
-                android:minHeight="4dp"
+                android:maxHeight="5dp"
+                android:minHeight="5dp"
                 android:paddingLeft="12dp"
                 android:paddingTop="8dp"
                 android:paddingRight="12dp"
                 android:paddingBottom="8dp"
-                android:progressDrawable="@drawable/jz_bottom_seek_progress"
+                android:progressDrawable="@drawable/seekbar_progress_drawable"
                 android:thumb="@drawable/jz_bottom_seek_thumb" />
 
             <TextView
@@ -152,13 +160,14 @@
                 android:visibility="gone" />
 
             <TextView
-                android:id="@+id/current"
+                android:id="@+id/total"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="10dp"
                 android:layout_marginEnd="30dp"
                 android:text="00:00"
-                android:textColor="#ffffff" />
+                android:textColor="#ffffff"
+                android:textSize="20sp" />
         </LinearLayout>
 
     </LinearLayout>
@@ -222,19 +231,21 @@
         android:layout_height="48dp"
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
-        android:background="@drawable/jz_title_bg"
+        android:background="#4D000000"
         android:paddingStart="10dp"
         android:visibility="visible">
 
         <ImageView
             android:id="@+id/back"
             android:layout_width="wrap_content"
-            android:layout_height="match_parent"
+            android:layout_height="@dimen/jz_start_button_w_h_normal"
             android:layout_alignParentStart="true"
             android:layout_centerVertical="true"
-            android:layout_margin="10dp"
+            android:layout_marginStart="30dp"
+            android:layout_marginEnd="10dp"
+            android:paddingTop="5dp"
             android:scaleType="centerInside"
-            app:srcCompat="@drawable/jz_click_back_selector" />
+            android:src="@drawable/previous" />
 
         <LinearLayout
             android:id="@+id/battery_time_layout"
@@ -247,7 +258,7 @@
             android:layout_marginRight="14dp"
             android:gravity="center_vertical"
             android:orientation="vertical"
-            android:visibility="invisible">
+            android:visibility="gone">
 
             <ImageView
                 android:id="@+id/battery_level"
@@ -279,7 +290,7 @@
             android:ellipsize="end"
             android:maxLines="2"
             android:textColor="#ffffff"
-            android:textSize="18sp" />
+            android:textSize="24sp" />
     </RelativeLayout>
 
 </RelativeLayout>

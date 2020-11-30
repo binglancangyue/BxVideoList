@@ -1,13 +1,17 @@
 package com.bixin.bxvideolist.model.tools;
 
 import android.content.ContentResolver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.database.Cursor;
 import android.media.MediaScannerConnection;
 import android.net.Uri;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.util.Log;
+
+import androidx.core.content.FileProvider;
 
 import com.bixin.bxvideolist.model.CustomValue;
 import com.bixin.bxvideolist.model.bean.VideoBean;
@@ -25,6 +29,12 @@ public class MediaData {
     private List<VideoBean> impactVideoList = new ArrayList<>();
     private List<VideoBean> pictureList = new ArrayList<>();
     private ArrayList<File> fileArrayList = new ArrayList<>();
+
+    public MediaData(){
+        scanDirAsync();
+        queryData();
+        Log.d("MediaData", "MediaData: ");
+    }
 
     private String getFileSize(File file) {
         String size;
@@ -153,7 +163,6 @@ public class MediaData {
      */
     public void rescan(boolean theFirst) {
         String SDCardPath = CustomValue.SDCARD_PATH + "/DVR-BX";
-        Log.d("test11", "rescan: "+SDCardPath);
         List<VideoBean> normalVideoTempList = new ArrayList<>();
         List<VideoBean> impactVideoTempList = new ArrayList<>();
         List<VideoBean> pictureTempList = new ArrayList<>();
@@ -487,6 +496,7 @@ public class MediaData {
     }*/
 
     public void queryData() {
+        Log.d("tst", "queryData: ");
         queryVideo();
         queryPicture();
     }
@@ -497,8 +507,8 @@ public class MediaData {
         String[] s = {
                 MediaStore.Images.Media.DATA, MediaStore.Images.Media.DISPLAY_NAME, MediaStore.Images.Media.SIZE};
         //只查询jpeg和png的图片
-        Cursor mCursor = mContentResolver.query(mImageUri, s,
-                null, null, MediaStore.Images.Media.DATE_MODIFIED + " desc");
+        Cursor mCursor = mContentResolver.query(mImageUri, s, null, null,
+                MediaStore.Images.Media.DATE_MODIFIED + " desc");
         VideoBean videoBean;
         pictureList.clear();
         if (mCursor != null) {
@@ -526,8 +536,8 @@ public class MediaData {
         ContentResolver mContentResolver = MyApplication.getInstance().getContentResolver();
         String[] s = {
                 MediaStore.Images.Media.DATA, MediaStore.Images.Media.DISPLAY_NAME, MediaStore.Images.Media.SIZE};
-        Cursor mCursor = mContentResolver.query(mImageUri, s,
-                null, null, MediaStore.Images.Media.DATE_MODIFIED + " desc");
+        Cursor mCursor = mContentResolver.query(mImageUri, s, null, null,
+                MediaStore.Images.Media.DATE_MODIFIED + " desc");
         VideoBean videoBean;
         normalVideoList.clear();
         impactVideoList.clear();
@@ -553,6 +563,24 @@ public class MediaData {
                 }
             }
             mCursor.close();
+        }
+    }
+
+    public static final String ACTION_MEDIA_SCANNER_SCAN_DIR = "android.intent.action.MEDIA_SCANNER_SCAN_DIR";
+
+    public void scanDirAsync() {
+        try {
+            Intent scanIntent = new Intent(ACTION_MEDIA_SCANNER_SCAN_DIR);
+//            scanIntent.setData(Uri.fromFile(new File(CustomValue.SDCARD_PATH + "/DVR-BX")));
+            scanIntent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+            Uri uri = FileProvider.getUriForFile(MyApplication.getInstance(),
+                    "com.bixin.bxvideolist.fileProvider",
+                    new File(CustomValue.SDCARD_PATH ));
+            scanIntent.setDataAndType(uri, "vnd.android.cursor.dir/video");
+            MyApplication.getInstance().sendBroadcast(scanIntent);
+        } catch (Exception e) {
+            e.printStackTrace();
+            Log.e("afsfs", "scanDirAsync:e " + e.getMessage());
         }
     }
 
