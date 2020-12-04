@@ -1,34 +1,34 @@
 package com.bixin.bxvideolist.view.activity;
 
-import android.Manifest;
 import android.annotation.SuppressLint;
-import android.app.Activity;
+import android.app.Instrumentation;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
-import android.content.pm.PackageManager;
-import android.database.ContentObserver;
+import android.graphics.Color;
+import android.graphics.PixelFormat;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
 import android.os.RemoteException;
-
-import androidx.annotation.RequiresApi;
-import androidx.core.app.ActivityCompat;
-import androidx.viewpager.widget.ViewPager;
-
 import android.provider.Settings;
-import android.telephony.TelephonyManager;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.KeyEvent;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.TextView;
+
+import androidx.annotation.RequiresApi;
+import androidx.viewpager.widget.ViewPager;
 
 import com.bixin.bxvideolist.R;
 import com.bixin.bxvideolist.adapter.HomeRecyclerViewAdapter;
@@ -44,15 +44,12 @@ import com.bixin.bxvideolist.model.tools.ToastUtils;
 import com.bixin.bxvideolist.model.tools.VideoListOperationTool;
 import com.bixin.bxvideolist.view.customview.CustomRecyclerView;
 import com.bx.carDVR.bylym.myaidl.FileListInterface;
-import com.tbruyelle.rxpermissions2.Permission;
-import com.tbruyelle.rxpermissions2.RxPermissions;
 import com.trello.rxlifecycle2.android.ActivityEvent;
-import com.trello.rxlifecycle2.components.RxActivity;
+import com.trello.rxlifecycle2.components.support.RxAppCompatActivity;
 
 import java.io.File;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -68,7 +65,7 @@ import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
 
 
-public class HomeActivity extends RxActivity implements View.OnClickListener,
+public class HomeActivity extends RxAppCompatActivity implements View.OnClickListener,
         OnRecyclerViewItemListener, OnDialogListener {
     private static final String TAG = "HomeActivity";
     private Context mContext;
@@ -77,9 +74,12 @@ public class HomeActivity extends RxActivity implements View.OnClickListener,
     private List<VideoBean> impactVideoList;
     private List<VideoBean> pictureList;
     private CustomRecyclerView normalVideoRecyclerView, lockVideoRecyclerView, pictureRecyclerView;
-    private LinearLayout ctlNormalVideo;
-    private LinearLayout ctlPicture;
-    private LinearLayout ctlLockVideo;
+    //    private LinearLayout ctlNormalVideo;
+//    private LinearLayout ctlPicture;
+//    private LinearLayout ctlLockVideo;
+    private TextView ctlNormalVideo;
+    private TextView ctlPicture;
+    private TextView ctlLockVideo;
     private int currentPage;
     private ViewPageAdapter adapter;
     public List<View> viewList = new ArrayList<>();
@@ -101,10 +101,13 @@ public class HomeActivity extends RxActivity implements View.OnClickListener,
     private DvrAIDL dvrAIDL;
     private FileListInterface listInterface;
     private static final String CAMERA_RECORD_STATUS = "camera_record_status";
+    private static final String CAMERA_RECORD_STOP = "camera_record_stop";
     private boolean isRecording = false;
     private LinearLayout parent;
+    protected WindowManager mWindowManager;
     private final int[] picture = {R.drawable.btn_all_video, R.drawable.btn_cloud_video, R.drawable.btn_photo};
     private int state = 1;
+    private View backView;
 
     @Override
     public void doSomething(int type) {
@@ -121,9 +124,10 @@ public class HomeActivity extends RxActivity implements View.OnClickListener,
     }
 
     private void sendBroadcastForStopRecording() {
-        Intent intent = new Intent();
-        intent.setAction(CustomValue.ACTION_STOP_RECORD);
-        sendBroadcast(intent);
+//        Intent intent = new Intent();
+//        intent.setAction(CustomValue.ACTION_STOP_RECORD);
+//        sendBroadcast(intent);
+        Settings.Global.putInt(getContentResolver(), CAMERA_RECORD_STOP, 1);
     }
 
     private static class InnerHandler extends Handler {
@@ -172,7 +176,6 @@ public class HomeActivity extends RxActivity implements View.OnClickListener,
                     case 9:
                         activity.updatePicture();
                         break;
-
                     default:
                         break;
                 }
@@ -200,10 +203,10 @@ public class HomeActivity extends RxActivity implements View.OnClickListener,
 //            getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
 //                    WindowManager.LayoutParams.FLAG_FULLSCREEN);
 //        }
-        Window window = getWindow();
+/*        Window window = getWindow();
         window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
         window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-        window.setStatusBarColor(getResources().getColor(R.color.statusBarColor));
+        window.setStatusBarColor(getResources().getColor(R.color.statusBarColor));*/
         super.onCreate(savedInstanceState);
         View view;
         if (CustomValue.IS_KD003) {
@@ -212,7 +215,7 @@ public class HomeActivity extends RxActivity implements View.OnClickListener,
             view = getLayoutInflater().inflate(R.layout.activity_main, null);
         }
         setContentView(view);
-        hideNavigationBar();
+//        hideNavigationBar();
         init();
         initView();
 //        initData();
@@ -258,13 +261,11 @@ public class HomeActivity extends RxActivity implements View.OnClickListener,
 
     private void init() {
         this.mContext = this;
+        mWindowManager = getWindowManager();
         mInnerHandler = new InnerHandler(this);
         mDialogTool = new ShowDialogTool(this, this);
         mFileTool = new VideoListOperationTool();
         compositeDisposable = new CompositeDisposable();
-//        if (CustomValue.IS_3IN) {
-//            bindAIDLService();
-//        }
         state = 1;
         try {
             state = Settings.Global.getInt(getContentResolver(), CAMERA_RECORD_STATUS);
@@ -291,9 +292,6 @@ public class HomeActivity extends RxActivity implements View.OnClickListener,
     };*/
 
     private void initData() {
-        if (!CustomValue.IS_3IN) {
-            mDialogTool.showStopRecordingDialog();
-        }
         if (mediaData == null) {
             mediaData = new MediaData();
         }
@@ -405,6 +403,8 @@ public class HomeActivity extends RxActivity implements View.OnClickListener,
         ctlNormalVideo.setOnClickListener(myOnClickListener);
         ctlLockVideo.setOnClickListener(myOnClickListener);
         ctlPicture.setOnClickListener(myOnClickListener);
+        ImageView ivBack=findViewById(R.id.iv_back);
+        ivBack.setOnClickListener(this);
 //        mViewPager.setOffscreenPageLimit(2);
         if (CustomValue.IS_KD003) {
 //            ivNormalVideo = findViewById(R.id.iv_normal);
@@ -418,21 +418,11 @@ public class HomeActivity extends RxActivity implements View.OnClickListener,
         mViewPager.setVisibility(View.INVISIBLE);
         changeColor(0);
         setOnPageChangeListener();
-
         if (state == 1) {
             mDialogTool.showStopRecordingDialog();
-            View decorView = getWindow().getDecorView();
-            decorView.setSystemUiVisibility(
-//                    View.SYSTEM_UI_FLAG_LAYOUT_STABLE
-                    View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
-                            | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
-                            | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
-                            | View.SYSTEM_UI_FLAG_FULLSCREEN
-                            | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
         } else {
             mViewPager.setVisibility(View.VISIBLE);
         }
-
     }
 
     private void initPagerItemView() {
@@ -526,7 +516,32 @@ public class HomeActivity extends RxActivity implements View.OnClickListener,
                     adapter.notifyDataSetChanged();
                 }
                 break;
+            case R.id.tv_float_back:
+                onBackPressed();
+                break;
+            case R.id.iv_back:
+                onKeyEvent(KeyEvent.KEYCODE_BACK);
+                break;
         }
+    }
+
+    /**
+     * 模拟系统按键。
+
+     *
+     * @param keyCode
+     */
+    public static void onKeyEvent(final int keyCode) {
+        new Thread() {
+            public void run() {
+                try {
+                    Instrumentation inst = new Instrumentation();
+                    inst.sendKeyDownUpSync(keyCode);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }.start();
     }
 
     /**
@@ -728,45 +743,6 @@ public class HomeActivity extends RxActivity implements View.OnClickListener,
                 });
     }
 
-
-    @SuppressLint("CheckResult")
-    public void requestPermissions(Activity activity) {
-        String[] permissions = {Manifest.permission.READ_EXTERNAL_STORAGE,
-                Manifest.permission.WRITE_EXTERNAL_STORAGE};
-
-        List<String> stringList = new ArrayList<>();
-        for (String s : permissions) {
-            if (ActivityCompat.checkSelfPermission(this, s)
-                    != PackageManager.PERMISSION_GRANTED) {
-                stringList.add(s);
-            }
-        }
-        if (!stringList.isEmpty()) {
-            RxPermissions rxPermission = new RxPermissions(activity);
-            rxPermission.requestEach(permissions)
-                    .subscribe(new Consumer<Permission>() {
-                        @Override
-                        public void accept(Permission permission) {
-                            if (permission.granted) {// 用户已经同意该权限
-//                            initData();
-                                initDataTest();
-                                Log.d(TAG, permission.name + " is granted.");
-                            } else if (permission.shouldShowRequestPermissionRationale) {
-                                // 用户拒绝了该权限，没有选中『不再询问』（Never ask again）,那么下次再次启动时，还会提示请求权限的对话框
-                                Log.d(TAG, permission.name + " is denied. More info should be " +
-                                        "provided.");
-                                finish();
-                            } else { // 用户拒绝了该权限，并且选中『不再询问』
-                                finish();
-                                Log.d(TAG, permission.name + " is denied.");
-                            }
-                        }
-                    });
-        } else {
-            initData();
-        }
-    }
-
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -840,25 +816,79 @@ public class HomeActivity extends RxActivity implements View.OnClickListener,
     };
 
     private void hideNavigationBar() {
-/*        int uiFlags = View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+        int uiFlags = View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
                 | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
                 | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION;
         uiFlags |= 0x00001000;
-        getWindow().getDecorView().setSystemUiVisibility(uiFlags);*/
-        View decorView = getWindow().getDecorView();
+        getWindow().getDecorView().setSystemUiVisibility(uiFlags);
+/*        View decorView = getWindow().getDecorView();
         decorView.setSystemUiVisibility(
-//                    View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+                    View.SYSTEM_UI_FLAG_LAYOUT_STABLE|
                 View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
                         | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
                         | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
                         | View.SYSTEM_UI_FLAG_FULLSCREEN
-                        | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
+                        | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);*/
     }
 
     private void showNavigationBar() {
         View decorView = getWindow().getDecorView();
         int uiOptions = View.SYSTEM_UI_FLAG_VISIBLE;
         decorView.setSystemUiVisibility(uiOptions);
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+    @Override
+    public void onWindowFocusChanged(boolean hasFocus) {
+        super.onWindowFocusChanged(hasFocus);
+        if (hasFocus && Build.VERSION.SDK_INT >= 19) {
+            transparentStatus();
+            hideNavigationBar();
+        }
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+    private void transparentStatus() {
+        Window window = getWindow();
+        window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+        window.getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                | View.SYSTEM_UI_FLAG_LAYOUT_STABLE);
+        window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+        window.setStatusBarColor(Color.TRANSPARENT);
+    }
+
+    private void addFloatWindow() {
+        WindowManager.LayoutParams lp = new WindowManager.LayoutParams(
+                ViewGroup.LayoutParams.WRAP_CONTENT,
+                ViewGroup.LayoutParams.WRAP_CONTENT,
+                WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY,
+//                WindowManager.LayoutParams.TYPE_PHONE,
+                WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN
+                        | WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS,
+                PixelFormat.TRANSLUCENT);
+        backView = LayoutInflater.from(this).inflate(R.layout.float_back, null);
+        lp.flags = WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL
+                | WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE;
+        lp.height = 80;
+        lp.width = 80;
+        lp.verticalMargin = 40;
+        lp.gravity = Gravity.BOTTOM | Gravity.RIGHT;
+        backView.setOnClickListener(this);
+        mWindowManager.addView(backView, lp);
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+//        addFloatWindow();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+//        if (backView != null) {
+//            mWindowManager.removeView(backView);
+//        }
     }
 
     @Override
@@ -882,23 +912,9 @@ public class HomeActivity extends RxActivity implements View.OnClickListener,
             compositeDisposable = null;
         }
         loadingDialogDismiss();
+
 //        if (CustomValue.IS_3IN) {
 //            unBingAIDLService();
 //        }
-    }
-
-    @Override
-    public void onWindowFocusChanged(boolean hasFocus) {
-        super.onWindowFocusChanged(hasFocus);
-        if (hasFocus && Build.VERSION.SDK_INT >= 19) {
-            View decorView = getWindow().getDecorView();
-            decorView.setSystemUiVisibility(
-//                    View.SYSTEM_UI_FLAG_LAYOUT_STABLE
-                    View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
-                            | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
-                            | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
-                            | View.SYSTEM_UI_FLAG_FULLSCREEN
-                            | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
-        }
     }
 }

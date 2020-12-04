@@ -5,10 +5,9 @@
     android:orientation="vertical">
 
     <com.bixin.bxvideolist.model.tools.MyJzvdStd
+        android:id="@+id/jcv_player"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:id="@+id/jcv_player"
         android:background="@android:color/black"
-        android:orientation="horizontal"
-         />
+        android:orientation="horizontal" />
 </LinearLayout>

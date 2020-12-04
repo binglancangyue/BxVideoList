@@ -1,6 +1,10 @@
 package com.bixin.bxvideolist.model.tools;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.media.MediaMetadataRetriever;
+import android.os.Build;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.View;
@@ -8,15 +12,28 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 
+import androidx.annotation.RequiresApi;
+
 import com.bixin.bxvideolist.R;
 import com.bixin.bxvideolist.model.CustomValue;
 import com.bixin.bxvideolist.model.bean.VideoBean;
 import com.bixin.bxvideolist.model.listener.OnFinishVideoActivityListener;
+import com.bixin.bxvideolist.view.activity.VideoPlayerActivity;
+import com.trello.rxlifecycle2.android.ActivityEvent;
 
-
+import java.io.File;
+import java.io.FileOutputStream;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
 import cn.jzvd.JzvdStd;
+import io.reactivex.Observable;
+import io.reactivex.ObservableEmitter;
+import io.reactivex.ObservableOnSubscribe;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.functions.Consumer;
+import io.reactivex.schedulers.Schedulers;
 
 public class MyJzvdStd extends JzvdStd {
     private ImageView ivNextBtn;
@@ -33,10 +50,16 @@ public class MyJzvdStd extends JzvdStd {
     private List<VideoBean> mImpactVideoList;
     private Context mContext;
     private LinearLayout mLinearLayout;
+    private ImageView ivKd003Back;
+    private VideoPlayerActivity mActivity;
 
 
     public MyJzvdStd(Context context) {
         super(context);
+    }
+
+    public void setActivity(VideoPlayerActivity activity) {
+        mActivity = activity;
     }
 
     public MyJzvdStd(Context context, AttributeSet attrs) {
@@ -91,40 +114,37 @@ public class MyJzvdStd extends JzvdStd {
         ivNextBtn = findViewById(R.id.next);
         ivNextBtn.setVisibility(VISIBLE);
         ivPreviousBtn = findViewById(R.id.previous);
+//        ImageView ivScreen = findViewById(R.id.iv_screen_shot);
+        backButton = findViewById(R.id.back);
 //        backButton.setImageResource(R.drawable.jz_click_back_selector);
         backButton.setVisibility(VISIBLE);
         ivNextBtn.setOnClickListener(this);
         ivPreviousBtn.setOnClickListener(this);
         fullscreenButton.setEnabled(false);
+//        ivScreen.setOnClickListener(this);
+        backButton.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.d(TAG, "onClick:back ");
+                activityListener.finishActivity();
+            }
+        });
+
     }
 
     @Override
     public void setScreenNormal() {
         super.setScreenNormal();
         fullscreenButton.setImageResource(R.drawable.btn_zoom_out);
-        backButton.setVisibility(View.GONE);
-        tinyBackImageView.setVisibility(View.INVISIBLE);
-        changeStartButtonSize((int) getResources().getDimension(R.dimen.jz_start_button_w_h_normal));
-        batteryTimeLayout.setVisibility(View.GONE);
-        clarity.setVisibility(View.GONE);
     }
 
     @Override
     public void setScreenFullscreen() {
         super.setScreenFullscreen();
-        //进入全屏之后要保证原来的播放状态和ui状态不变，改变个别的ui
+
         fullscreenButton.setImageResource(R.drawable.btn_zoom_out);
-        backButton.setVisibility(View.VISIBLE);
-        tinyBackImageView.setVisibility(View.INVISIBLE);
+        backButton.setVisibility(View.GONE);
         batteryTimeLayout.setVisibility(View.GONE);
-        if (jzDataSource.urlsMap.size() == 1) {
-            clarity.setVisibility(GONE);
-        } else {
-            clarity.setText(jzDataSource.getCurrentKey().toString());
-            clarity.setVisibility(View.VISIBLE);
-        }
-        changeStartButtonSize((int) getResources().getDimension(R.dimen.jz_start_button_w_h_fullscreen));
-        setSystemTimeAndBattery();
     }
 
    /* @Override
@@ -289,10 +309,9 @@ public class MyJzvdStd extends JzvdStd {
             addTextureView();
             onStatePreparing();
         }*/
-        if (i == R.id.back) {
-            Log.d(TAG, "onClick:back ");
-            activityListener.finishActivity();
-        }
+//        if (i == R.id.iv_screen_shot) {
+//            aaaP();
+//        }
 
         if (i == R.id.previous || i == R.id.next) {
             // by altair,add next and previous button
@@ -463,11 +482,37 @@ public class MyJzvdStd extends JzvdStd {
         }
     }
 
-    private void aa(long value) {
-        long time = progressBar.getProgress() * getDuration() / 100;
-        Log.d(TAG, "aa: time " + time);
-        time = time + value;
-        mediaInterface.seekTo(time);
+
+    public void doScreenshot(long time, ObservableEmitter<String> emitter) {
+        String videoPath = mVideoBeanList.get(mCurrentVideoIndex).getPath();
+        Log.d(TAG, "aaaP: video " + videoPath);
+        MediaMetadataRetriever mmr = new MediaMetadataRetriever();
+        mmr.setDataSource(videoPath);
+        Bitmap frameBitmap = mmr.getFrameAtTime(time);
+        mmr.release();
+        File file = new File(createPictureName());
+        Log.d(TAG, "aaaP: filePath picture " + file.getAbsolutePath());
+        try (FileOutputStream os = new FileOutputStream(file)) {
+            frameBitmap.compress(Bitmap.CompressFormat.JPEG, 100, os);
+            os.flush();
+            os.close();
+            emitter.onNext(file.getAbsolutePath());
+        } catch (Exception e) {
+            e.printStackTrace();
+            emitter.onNext("fail");
+        }
     }
 
+    public long getTime() {
+        return (progressBar.getProgress() * getDuration() / 100);
+    }
+
+    @SuppressLint("SimpleDateFormat")
+    private String createPictureName() {
+        Date date = new Date(System.currentTimeMillis());
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMddHHmmss");
+        String name = dateFormat.format(date);
+        String sdPath = StoragePaTool.getStoragePath(true);
+        return sdPath + "/DVR-BX/Picture/" + name + "_screenshot" + ".jpg";
+    }
 }

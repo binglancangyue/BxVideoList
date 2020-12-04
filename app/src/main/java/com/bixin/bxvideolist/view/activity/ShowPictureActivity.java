@@ -3,10 +3,14 @@ package com.bixin.bxvideolist.view.activity;
 import android.app.Activity;
 import android.content.Context;
 import android.content.IntentFilter;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+
+import androidx.annotation.RequiresApi;
 import androidx.viewpager.widget.ViewPager;
+
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
@@ -47,6 +51,7 @@ public class ShowPictureActivity extends Activity implements ViewPager.OnPageCha
         getData();
         setViewPager();
     }
+
     private void setStatusBarVisible(boolean show) {
         if (!CustomValue.IS_966) {
             return;
@@ -63,6 +68,7 @@ public class ShowPictureActivity extends Activity implements ViewPager.OnPageCha
             getWindow().getDecorView().setSystemUiVisibility(uiFlags);
         }
     }
+
     @Override
     protected void onStart() {
         super.onStart();
@@ -102,7 +108,6 @@ public class ShowPictureActivity extends Activity implements ViewPager.OnPageCha
                 finish();
             }
         });
-
     }
 
     private void getData() {
@@ -168,6 +173,27 @@ public class ShowPictureActivity extends Activity implements ViewPager.OnPageCha
     @Override
     public void onPageScrollStateChanged(int state) {
 
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+    @Override
+    public void onWindowFocusChanged(boolean hasFocus) {
+        super.onWindowFocusChanged(hasFocus);
+        if (hasFocus && Build.VERSION.SDK_INT >= 19) {
+            hideNavigationBar();
+        }
+    }
+
+    private void hideNavigationBar() {
+        View decorView = getWindow().getDecorView();
+        decorView.setSystemUiVisibility(
+                View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+                        | View.SYSTEM_UI_FLAG_FULLSCREEN
+                        | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+                        | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                        | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+                        | View.SYSTEM_UI_FLAG_FULLSCREEN
+                        | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
     }
 
     @Override

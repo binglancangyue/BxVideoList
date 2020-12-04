@@ -4,8 +4,10 @@ import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.os.Build;
 import android.view.Gravity;
 import android.view.View;
+import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.LinearLayout;
@@ -121,15 +123,14 @@ public class ShowDialogTool {
                 @Override
                 public void onClick(View v) {
                     mStopRecordingDialog.dismiss();
-//                    mViewPager.setVisibility(View.VISIBLE);
                     sendToActivity(1);
+
                 }
             });
             builder.setOnCancelListener(new DialogInterface.OnCancelListener() {
                 @Override
                 public void onCancel(DialogInterface dialogInterface) {
                     mStopRecordingDialog.dismiss();
-//                    finish();
                     sendToActivity(2);
                 }
             });
@@ -166,13 +167,44 @@ public class ShowDialogTool {
 
     }
     private void showAlertDialog(AlertDialog alertDialog) {
+        focusNotAle(alertDialog.getWindow());
         alertDialog.show();
         WindowManager.LayoutParams params =
                 alertDialog.getWindow().getAttributes();
         params.width = (int) mContext.getResources().getDimension(R.dimen.kd003DialogWidth);
         alertDialog.getWindow().setAttributes(params);
+        hideNavigationBar(alertDialog.getWindow());
+        clearFocusNotAle(alertDialog.getWindow());
     }
 
+    private void hideNavigationBar(Window window) {
+        int uiFlags = View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+                | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION;
+        uiFlags |= 0x00001000;
+        window.getDecorView().setSystemUiVisibility(uiFlags);
+    }
+
+    /**
+     * dialog 需要全屏的时候用，focusNotAle() 成对出现
+     * 在show 前调用  focusNotAle   show后调用clearFocusNotAle
+     *
+     * @param window
+     */
+    public void clearFocusNotAle(Window window) {
+        window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE);
+    }
+
+    /**
+     * dialog 需要全屏的时候用，和clearFocusNotAle() 成对出现
+     * 在show 前调用  focusNotAle   show后调用clearFocusNotAle
+     *
+     * @param window
+     */
+    public void focusNotAle(Window window) {
+        window.setFlags(WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE,
+                WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE);
+    }
 
     /**
      * 显示正在等待的Dialog

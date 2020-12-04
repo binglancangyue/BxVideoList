@@ -170,9 +170,8 @@ public class MediaData {
         File fileSDCard = new File(SDCardPath);
         ArrayList<File> files = new ArrayList<>();
         if (fileSDCard.exists()) {
-            if (fileSDCard.exists()) {
-                refreshFileList(SDCardPath, files);
-            }
+            refreshFileList(SDCardPath, files);
+            Log.d("aa", "rescan: " + files.size());
             //排序
             Collections.sort(files, new Comparator<File>() {
                 @Override
@@ -199,6 +198,7 @@ public class MediaData {
                 String path = file.getPath();
                 String size = getFileSize(file);
                 String name = file.getName();
+
                 videoBean.setPath(path);
                 videoBean.setName(name);
                 videoBean.setSize(size);
@@ -219,6 +219,7 @@ public class MediaData {
             impactVideoList.addAll(impactVideoTempList);
             pictureList.addAll(pictureTempList);
         } else {
+            Log.d("rescan", "rescan: null");
             clearData();
         }
     }
@@ -239,7 +240,6 @@ public class MediaData {
             if (fileSDCard.exists()) {
                 refreshFileList(SDCardPath, files);
             }
-            Log.d("aa", "rescan: " + files.size());
             //排序
             Collections.sort(files, new Comparator<File>() {
                 @Override
@@ -279,6 +279,7 @@ public class MediaData {
             impactVideoList.addAll(impactVideoTempList);
             pictureList.addAll(pictureTempList);
         } else {
+            Log.d("aa", "rescan: null" );
             clearData();
         }
     }

@@ -4,19 +4,23 @@ import android.annotation.SuppressLint;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.os.SystemClock;
+
 import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bixin.bxvideolist.R;
@@ -31,13 +35,14 @@ import com.bixin.bxvideolist.model.tools.ToastUtils;
 import com.bumptech.glide.Glide;
 import com.jcodecraeer.xrecyclerview.XRecyclerView;
 import com.trello.rxlifecycle2.android.ActivityEvent;
-import com.trello.rxlifecycle2.components.RxActivity;
+import com.trello.rxlifecycle2.components.support.RxAppCompatActivity;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+import cn.jzvd.Jzvd;
 import cn.jzvd.JzvdStd;
 import io.reactivex.Observable;
 import io.reactivex.ObservableEmitter;
@@ -48,7 +53,7 @@ import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
 
 
-public class VideoPlayerActivity extends RxActivity implements View.OnClickListener,
+public class VideoPlayerActivity extends RxAppCompatActivity implements View.OnClickListener,
         OnRecyclerViewItemListener, XRecyclerView.LoadingListener, RecyclerViewAdapter.RecyclerViewOnItemListener, OnFinishVideoActivityListener {
     private final static String TAG = "VideoPlayerActivity";
     private Context mContext;
@@ -115,7 +120,15 @@ public class VideoPlayerActivity extends RxActivity implements View.OnClickListe
     private void initView() {
 //        xRecyclerView = findViewById(R.id.ryc_list);
         jcVideoPlayer = findViewById(R.id.jcv_player);
+        ImageView screenShot=jcVideoPlayer.findViewById(R.id.iv_screen_shot);
+        screenShot.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                screenshot();
+            }
+        });
         jcVideoPlayer.setContext(mContext);
+        jcVideoPlayer.setActivity(this);
         jcVideoPlayer.setOnFinishVideoActivity(this);
 //        tvNormal = findViewById(R.id.tv_btn_normal);
 //        tvLock = findViewById(R.id.tv_btn_lock);
@@ -230,6 +243,7 @@ public class VideoPlayerActivity extends RxActivity implements View.OnClickListe
         }
     }
 
+
     private void initRecyclerView() {
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         layoutManager.setOrientation(RecyclerView.VERTICAL);
@@ -277,7 +291,6 @@ public class VideoPlayerActivity extends RxActivity implements View.OnClickListe
         jcVideoPlayer.setUp(videoPath, name, JzvdStd.SCREEN_FULLSCREEN);
         jcVideoPlayer.startVideo();
         jcVideoPlayer.gotoScreenFullscreen();
-//        jcVideoPlayer.setScreenFullscreen();
         Glide.with(mContext).load(videoPath).into(jcVideoPlayer.thumbImageView);
     }
 
@@ -376,6 +389,7 @@ public class VideoPlayerActivity extends RxActivity implements View.OnClickListe
     protected void onPause() {
         super.onPause();
         JzvdStd.releaseAllVideos();
+        Jzvd.NORMAL_ORIENTATION = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE;
         finish();
     }
 
@@ -393,6 +407,30 @@ public class VideoPlayerActivity extends RxActivity implements View.OnClickListe
         }
     }
 
+
+    @SuppressLint("CheckResult")
+    private void screenshot() {
+        long time = jcVideoPlayer.getTime();
+        compositeDisposable.add(Observable.create(new ObservableOnSubscribe<String>() {
+            @Override
+            public void subscribe(ObservableEmitter<String> emitter) throws Exception {
+                jcVideoPlayer.doScreenshot(time,emitter);
+            }
+        }).subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .compose(bindUntilEvent(ActivityEvent.DESTROY)).subscribe(new Consumer<String>() {
+                    @Override
+                    public void accept(String s) throws Exception {
+                        Log.d(TAG, "accept: s "+s);
+                        if (!s.equals("fail")){
+                            ToastUtils.showToast("完成");
+                        }else{
+                            ToastUtils.showToast("失败");
+                        }
+                    }
+                }));
+    }
+
     private class FinishReceiver extends BroadcastReceiver {
 
         @Override
@@ -400,5 +438,6 @@ public class VideoPlayerActivity extends RxActivity implements View.OnClickListe
 
         }
     }
+
 
 }

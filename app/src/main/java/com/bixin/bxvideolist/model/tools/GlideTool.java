@@ -36,7 +36,7 @@ public class GlideTool {
                 .apply(options)
                 .thumbnail(thumbnail)
                 .diskCacheStrategy(DiskCacheStrategy.AUTOMATIC)
-                .transform(new GlideRoundTransform(context,20))
+                .transform(new GlideRoundTransform(context,30))
                 .into(imageView);
     }
 }

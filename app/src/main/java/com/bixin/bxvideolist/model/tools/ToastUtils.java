@@ -12,6 +12,7 @@ import com.bixin.bxvideolist.view.activity.MyApplication;
 
 public class ToastUtils {
     private static Toast toast = null;
+
     public static void showToast(int text) {
         if (toast == null) {
             toast = Toast.makeText(MyApplication.getInstance(), text, Toast.LENGTH_SHORT);
@@ -22,7 +23,7 @@ public class ToastUtils {
             TextView messageTextView = (TextView) linearLayout.getChildAt(0);
             messageTextView.setTextSize(24);
             messageTextView.setTextColor(Color.WHITE);
-            toast.setGravity(Gravity.BOTTOM, 0, 40);
+            toast.setGravity(Gravity.BOTTOM, 0, 35);
         } else {
             toast.setText(text);
             toast.setDuration(Toast.LENGTH_SHORT);
@@ -30,7 +31,23 @@ public class ToastUtils {
         toast.show();
     }
 
+    public static void showToast(String text) {
+        if (toast == null) {
+            toast = Toast.makeText(MyApplication.getInstance(), text, Toast.LENGTH_SHORT);
+//            toast.setGravity(Gravity.BOTTOM, 0, 50);
 
+            LinearLayout linearLayout = (LinearLayout) toast.getView();
+            linearLayout.setBackground(MyApplication.getInstance().getResources().getDrawable(R.drawable.circle_toast_bg));
+            TextView messageTextView = (TextView) linearLayout.getChildAt(0);
+            messageTextView.setTextSize(24);
+            messageTextView.setTextColor(Color.WHITE);
+            toast.setGravity(Gravity.BOTTOM, 0, 35);
+        } else {
+            toast.setText(text);
+            toast.setDuration(Toast.LENGTH_SHORT);
+        }
+        toast.show();
+    }
 /*    public static void showToast(int text) {
         if (toast == null) {
             toast = Toast.makeText(MyApplication.getInstance(), text, Toast.LENGTH_SHORT);
