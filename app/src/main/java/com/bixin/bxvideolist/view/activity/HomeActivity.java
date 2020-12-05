@@ -21,6 +21,7 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 
+
 import com.bixin.bxvideolist.R;
 import com.bixin.bxvideolist.adapter.HomeRecyclerViewAdapter;
 import com.bixin.bxvideolist.adapter.ViewPageAdapter;
@@ -88,7 +89,6 @@ public class HomeActivity extends RxActivity implements View.OnClickListener,
     private ImageView ivNormalVideo;
     private boolean isExit = false;
     private boolean isNotShowDialog = true;
-    private DvrAIDL dvrAIDL;
     private FileListInterface listInterface;
 
     @Override
@@ -230,9 +230,6 @@ public class HomeActivity extends RxActivity implements View.OnClickListener,
         mDialogTool = new ShowDialogTool(this, this);
         mFileTool = new VideoListOperationTool();
         compositeDisposable = new CompositeDisposable();
-        if (CustomValue.IS_3IN) {
-            bindAIDLService();
-        }
     }
 
     private void initData() {
