@@ -122,7 +122,6 @@ public class HomeActivity extends RxAppCompatActivity implements View.OnClickLis
             doLockFile(R.id.delete);
         }
     }
-
     private void sendBroadcastForStopRecording() {
 //        Intent intent = new Intent();
 //        intent.setAction(CustomValue.ACTION_STOP_RECORD);

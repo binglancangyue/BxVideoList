@@ -423,9 +423,9 @@ public class VideoPlayerActivity extends RxAppCompatActivity implements View.OnC
                     public void accept(String s) throws Exception {
                         Log.d(TAG, "accept: s "+s);
                         if (!s.equals("fail")){
-                            ToastUtils.showToast("完成");
+                            ToastUtils.showToast("螢幕拍照完成");
                         }else{
-                            ToastUtils.showToast("失败");
+                            ToastUtils.showToast("螢幕拍照失败");
                         }
                     }
                 }));
