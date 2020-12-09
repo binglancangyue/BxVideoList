@@ -21,12 +21,10 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 
-
 import com.bixin.bxvideolist.R;
 import com.bixin.bxvideolist.adapter.HomeRecyclerViewAdapter;
 import com.bixin.bxvideolist.adapter.ViewPageAdapter;
 import com.bixin.bxvideolist.model.CustomValue;
-import com.bixin.bxvideolist.model.DvrAIDL;
 import com.bixin.bxvideolist.model.bean.VideoBean;
 import com.bixin.bxvideolist.model.listener.OnDialogListener;
 import com.bixin.bxvideolist.model.listener.OnRecyclerViewItemListener;
