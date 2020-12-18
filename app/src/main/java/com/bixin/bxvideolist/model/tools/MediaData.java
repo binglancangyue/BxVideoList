@@ -195,7 +195,7 @@ public class MediaData {
                 videoBean.setSize(size);
                 videoBean.setSelect(false);
                 if (name.endsWith(".mp4")) {
-                    if (!name.contains("impact")) {
+                    if (!name.contains("VID")) {
                         normalVideoTempList.add(videoBean);
                     } else {
                         impactVideoTempList.add(videoBean);
