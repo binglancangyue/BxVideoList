@@ -120,7 +120,7 @@ public class MyJzvdStd extends JzvdStd {
         backButton.setVisibility(VISIBLE);
         ivNextBtn.setOnClickListener(this);
         ivPreviousBtn.setOnClickListener(this);
-        fullscreenButton.setEnabled(false);
+//        fullscreenButton.setEnabled(false);
 //        ivScreen.setOnClickListener(this);
         backButton.setOnClickListener(new OnClickListener() {
             @Override
@@ -321,25 +321,27 @@ public class MyJzvdStd extends JzvdStd {
             }
 //            changeData();
             if (i == R.id.previous) {
-                mCurrentVideoIndex--;
+                quickRetreat();
+                /*mCurrentVideoIndex--;
                 if (mCurrentVideoIndex < 0) {
                     mCurrentVideoIndex = 0;
                     ToastUtils.showToast(R.string.already_first_video);
                     return;
-                }
+                }*/
             }
             if (i == R.id.next) {
-                mCurrentVideoIndex++;
-                if (mCurrentVideoIndex > maxLength) {
-                    mCurrentVideoIndex = maxLength;
-                    ToastUtils.showToast(R.string.already_last_video);
-                    return;
-                }
+//                mCurrentVideoIndex++;
+//                if (mCurrentVideoIndex > maxLength) {
+//                    mCurrentVideoIndex = maxLength;
+//                    ToastUtils.showToast(R.string.already_last_video);
+//                    return;
+//                }
+                fastForward();
             }
-            setUp(mVideoBeanList.get(mCurrentVideoIndex).getPath(),
-                    mVideoBeanList.get(mCurrentVideoIndex).getName());
-            startVideo();
-            gotoScreenFullscreen();
+//            setUp(mVideoBeanList.get(mCurrentVideoIndex).getPath(),
+//                    mVideoBeanList.get(mCurrentVideoIndex).getName());
+//            startVideo();
+//            gotoScreenFullscreen();
         }
 
     }
@@ -515,4 +517,30 @@ public class MyJzvdStd extends JzvdStd {
         String sdPath = StoragePaTool.getStoragePath(true);
         return sdPath + "/DVR-BX/Picture/" + name + "_screenshot" + ".jpg";
     }
+
+    private void fastForward() {
+        //总时间长度
+        long duration = getDuration();
+        //当前时间
+        long currentPositionWhenPlaying = getCurrentPositionWhenPlaying();
+        //快进（15S）
+        long fastForwardProgress = currentPositionWhenPlaying + 10 * 1000;
+        if (duration > fastForwardProgress) {
+            mediaInterface.seekTo(fastForwardProgress);
+        } else {
+            mediaInterface.seekTo(duration);
+        }
+    }
+
+    private void quickRetreat() { //当前时间
+        long quickRetreatCurrentPositionWhenPlaying = getCurrentPositionWhenPlaying();
+        //快退（15S）
+        long quickRetreatProgress = quickRetreatCurrentPositionWhenPlaying - 10 * 1000;
+        if (quickRetreatProgress > 0) {
+            mediaInterface.seekTo(quickRetreatProgress);
+        } else {
+            mediaInterface.seekTo(0);
+        }
+    }
+
 }

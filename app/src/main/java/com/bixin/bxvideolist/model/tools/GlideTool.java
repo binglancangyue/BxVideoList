@@ -5,7 +5,7 @@ import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import com.bumptech.glide.load.resource.bitmap.CenterCrop;
+import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
 import com.bumptech.glide.request.RequestOptions;
 
 public class GlideTool {
@@ -36,7 +36,7 @@ public class GlideTool {
                 .apply(options)
                 .thumbnail(thumbnail)
                 .diskCacheStrategy(DiskCacheStrategy.AUTOMATIC)
-                .transform(new GlideRoundTransform(context,30))
+                .transform(new RoundedCorners(25))
                 .into(imageView);
     }
 }
