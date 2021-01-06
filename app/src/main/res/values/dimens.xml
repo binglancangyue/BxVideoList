@@ -27,6 +27,6 @@
     <dimen name="videoImageWidth">160dp</dimen>
     <dimen name="videoImageHeight">90dp</dimen>
     <dimen name="kd003DialogWidth">500dp</dimen>
-    <dimen name="jz_start_button_w_h_fullscreen">60dp</dimen>
+    <dimen name="jz_start_button_w_h_fullscreen">68dp</dimen>
     <dimen name="jz_start_button_w_h_normal">50dp</dimen>
 </resources>

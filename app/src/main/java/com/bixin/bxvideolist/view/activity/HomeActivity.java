@@ -268,6 +268,7 @@ public class HomeActivity extends RxAppCompatActivity implements View.OnClickLis
         state = 1;
         try {
             state = Settings.Global.getInt(getContentResolver(), CAMERA_RECORD_STATUS);
+            Settings.Global.putInt(getContentResolver(), CAMERA_RECORD_STOP, 0);
             Log.d(TAG, "dvr state : " + state);
         } catch (Settings.SettingNotFoundException e) {
             e.printStackTrace();
@@ -764,7 +765,7 @@ public class HomeActivity extends RxAppCompatActivity implements View.OnClickLis
         if (!isExit) {
             isExit = true;
             ToastUtils.showToast(R.string.exit_app);
-            mInnerHandler.sendEmptyMessageDelayed(CustomValue.HANDLE_EXIT_APP, 2000);
+//            mInnerHandler.sendEmptyMessageDelayed(CustomValue.HANDLE_EXIT_APP, 2000);
         } else {
             System.exit(0);
         }

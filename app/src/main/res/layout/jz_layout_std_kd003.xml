@@ -68,14 +68,13 @@
                 android:layout_width="@dimen/jz_start_button_w_h_normal"
                 android:layout_height="@dimen/jz_start_button_w_h_normal"
                 android:src="@drawable/btn_out"
-                android:visibility="visible"
+                android:visibility="gone"
                 tools:ignore="ObsoleteLayoutParam" />
 
             <ImageView
                 android:id="@+id/previous"
                 android:layout_width="@dimen/jz_start_button_w_h_normal"
                 android:layout_height="@dimen/jz_start_button_w_h_normal"
-                android:padding="5dp"
                 android:src="@drawable/btn_fast_rewind" />
 
             <ImageView
@@ -88,7 +87,6 @@
                 android:id="@+id/next"
                 android:layout_width="@dimen/jz_start_button_w_h_normal"
                 android:layout_height="@dimen/jz_start_button_w_h_normal"
-                android:padding="5dp"
                 android:src="@drawable/btn_fast_forward" />
 
             <ImageView
@@ -96,7 +94,7 @@
                 android:layout_width="@dimen/jz_start_button_w_h_normal"
                 android:layout_height="@dimen/jz_start_button_w_h_normal"
                 android:src="@drawable/btn_zoom_out"
-                android:visibility="visible"
+                android:visibility="gone"
                 tools:ignore="ObsoleteLayoutParam" />
         </LinearLayout>
 

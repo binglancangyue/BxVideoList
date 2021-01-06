@@ -12,7 +12,7 @@
     <LinearLayout
         android:id="@+id/ll_status_bar"
         android:layout_width="match_parent"
-        android:layout_height="50dp"
+        android:layout_height="60dp"
         android:background="#4D000000"
         android:gravity="center_vertical"
         android:orientation="horizontal">
@@ -23,7 +23,7 @@
             android:layout_height="match_parent"
             android:layout_marginStart="20dp"
             android:padding="10dp"
-            android:src="@drawable/selector_pic_back" />
+            android:src="@drawable/previous" />
 
         <TextView
             android:id="@+id/tv_picture_name"

@@ -166,6 +166,7 @@ public class VideoPlayerActivity extends RxAppCompatActivity implements View.OnC
             playVideo(path, name);
             jcVideoPlayer.setIndex(index);
         }*/
+        geDataList();
         if (bundle != null) {
             VideoPlayerBean videoPlayerBean =
                     bundle.getParcelable("VideoPlayerBean");
@@ -174,10 +175,12 @@ public class VideoPlayerActivity extends RxAppCompatActivity implements View.OnC
             int index = videoPlayerBean.getPosition();
             type = videoPlayerBean.getType();
             Log.d(TAG, "initData: " + path + " ");
-            playVideo(path, name);
+            jcVideoPlayer.setVideoType(type);
             jcVideoPlayer.setIndex(index);
+            playVideo(path, name);
+
         }
-        geDataList();
+
         /*getWindow().getDecorView().post(() ->
                 mInnerHandler.post(() -> {
                     //每次打开只加载30条数据

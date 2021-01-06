@@ -5,6 +5,8 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.media.MediaMetadataRetriever;
 import android.os.Build;
+import android.os.Handler;
+import android.os.Message;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.View;
@@ -23,6 +25,7 @@ import com.trello.rxlifecycle2.android.ActivityEvent;
 
 import java.io.File;
 import java.io.FileOutputStream;
+import java.lang.ref.WeakReference;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
@@ -52,6 +55,9 @@ public class MyJzvdStd extends JzvdStd {
     private LinearLayout mLinearLayout;
     private ImageView ivKd003Back;
     private VideoPlayerActivity mActivity;
+    private boolean isHidepre = false;
+    private boolean isHideNext = false;
+    private MyHandle myHandle;
 
 
     public MyJzvdStd(Context context) {
@@ -68,10 +74,16 @@ public class MyJzvdStd extends JzvdStd {
 
     public void setContext(Context context) {
         this.mContext = context;
+//        myHandle = new MyHandle(this);
     }
 
     public void setOnFinishVideoActivity(OnFinishVideoActivityListener onFinishVideoActivity) {
         this.activityListener = onFinishVideoActivity;
+    }
+
+    public void setVideoType(int number) {
+        this.type = number;
+        changeData();
     }
 
     public void setData(List<VideoBean> list) {
@@ -95,6 +107,15 @@ public class MyJzvdStd extends JzvdStd {
 
     public void setIndex(int index) {
         this.mCurrentVideoIndex = index;
+        Log.d(TAG, "setIndex:index " + index + " maxLength " + maxLength);
+        if (index == 0) {
+            isHidepre = true;
+            ivPreviousBtn.setVisibility(View.INVISIBLE);
+        }
+        if (index == maxLength) {
+            isHideNext = true;
+            ivNextBtn.setVisibility(View.INVISIBLE);
+        }
     }
 
     @Override
@@ -145,6 +166,7 @@ public class MyJzvdStd extends JzvdStd {
         fullscreenButton.setImageResource(R.drawable.btn_zoom_out);
         backButton.setVisibility(View.GONE);
         batteryTimeLayout.setVisibility(View.GONE);
+        changeStartButtonSize((int) getResources().getDimension(R.dimen.jz_start_button_w_h_fullscreen));
     }
 
    /* @Override
@@ -312,36 +334,64 @@ public class MyJzvdStd extends JzvdStd {
 //        if (i == R.id.iv_screen_shot) {
 //            aaaP();
 //        }
-
+//        changeData();
         if (i == R.id.previous || i == R.id.next) {
             // by altair,add next and previous button
             if (mVideoBeanList.size() == 0) {
                 ToastUtils.showToast(R.string.not_video);
                 return;
             }
-//            changeData();
             if (i == R.id.previous) {
-                quickRetreat();
-                /*mCurrentVideoIndex--;
-                if (mCurrentVideoIndex < 0) {
+//                quickRetreat();
+                mCurrentVideoIndex--;
+                /*if (mCurrentVideoIndex < 0) {
                     mCurrentVideoIndex = 0;
                     ToastUtils.showToast(R.string.already_first_video);
                     return;
                 }*/
+                Log.d(TAG, "onClick: mCurrentVideoIndex" + mCurrentVideoIndex);
+                if (mCurrentVideoIndex <= 0) {
+                    mCurrentVideoIndex = 0;
+                    isHidepre = true;
+                    ivPreviousBtn.setVisibility(View.INVISIBLE);
+//                    myHandle.sendEmptyMessage(3);
+//                    return;
+                } else {
+                    isHidepre = false;
+                }
             }
             if (i == R.id.next) {
-//                mCurrentVideoIndex++;
+                mCurrentVideoIndex++;
 //                if (mCurrentVideoIndex > maxLength) {
 //                    mCurrentVideoIndex = maxLength;
 //                    ToastUtils.showToast(R.string.already_last_video);
 //                    return;
 //                }
-                fastForward();
+                Log.d(TAG, "onClick: mCurrentVideoIndex" + mCurrentVideoIndex +
+                        " maxLength " + maxLength);
+                if (mCurrentVideoIndex >= maxLength) {
+                    mCurrentVideoIndex = maxLength;
+                    isHideNext = true;
+                    ivNextBtn.setVisibility(View.INVISIBLE);
+//                    myHandle.sendEmptyMessage(1);
+                } else {
+                    isHideNext = false;
+                }
             }
-//            setUp(mVideoBeanList.get(mCurrentVideoIndex).getPath(),
-//                    mVideoBeanList.get(mCurrentVideoIndex).getName());
-//            startVideo();
-//            gotoScreenFullscreen();
+            if (mCurrentVideoIndex != 0) {
+                isHidepre = false;
+                ivPreviousBtn.setVisibility(View.VISIBLE);
+//                myHandle.sendEmptyMessage(4);
+            }
+            if (mCurrentVideoIndex != maxLength) {
+                isHideNext = false;
+                ivNextBtn.setVisibility(View.VISIBLE);
+//                myHandle.sendEmptyMessage(2);
+            }
+            setUp(mVideoBeanList.get(mCurrentVideoIndex).getPath(),
+                    mVideoBeanList.get(mCurrentVideoIndex).getName());
+            startVideo();
+            gotoScreenFullscreen();
         }
 
     }
@@ -378,13 +428,22 @@ public class MyJzvdStd extends JzvdStd {
         super.setAllControlsVisiblity(topCon, bottomCon, startBtn, loadingPro, thumbImg,
                 bottomPro, retryLayout);
         //使用的start按钮的Visibility值
-        ivNextBtn.setVisibility(startBtn);
-        ivPreviousBtn.setVisibility(startBtn);
-        ivHuaZhong.setVisibility(startBtn);
+        if (isHidepre) {
+            ivPreviousBtn.setVisibility(View.INVISIBLE);
+        } else {
+            ivPreviousBtn.setVisibility(startBtn);
+        }
+        if (isHideNext) {
+            ivNextBtn.setVisibility(View.INVISIBLE);
+        } else {
+            ivNextBtn.setVisibility(startBtn);
+        }
+
+//        ivHuaZhong.setVisibility(startBtn);
         backButton.setVisibility(startBtn);
         mLinearLayout.setVisibility(startBtn);
         if (CustomValue.IS_KD003) {
-            fullscreenButton.setVisibility(startBtn);
+//            fullscreenButton.setVisibility(startBtn);
         }
         if (mVideoBeanList == null) {
             return;
@@ -541,6 +600,41 @@ public class MyJzvdStd extends JzvdStd {
         } else {
             mediaInterface.seekTo(0);
         }
+    }
+
+    private static class MyHandle extends Handler {
+        private MyJzvdStd myJzvdStd;
+
+        public MyHandle(MyJzvdStd jzvdStd) {
+            WeakReference<MyJzvdStd> weakReference = new WeakReference<>(jzvdStd);
+            myJzvdStd = weakReference.get();
+        }
+
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+            if (msg.what == 1) {
+                myJzvdStd.setNextBtnShow(View.INVISIBLE);
+            }
+            if (msg.what == 2) {
+                myJzvdStd.setNextBtnShow(View.VISIBLE);
+            }
+            if (msg.what == 3) {
+                myJzvdStd.setPreviousBtnShow(View.INVISIBLE);
+            }
+            if (msg.what == 4) {
+                myJzvdStd.setPreviousBtnShow(View.VISIBLE);
+            }
+            removeMessages(msg.what);
+        }
+    }
+
+    private void setNextBtnShow(int isShow) {
+        ivNextBtn.setVisibility(isShow);
+    }
+
+    private void setPreviousBtnShow(int isShow) {
+        ivPreviousBtn.setVisibility(isShow);
     }
 
 }

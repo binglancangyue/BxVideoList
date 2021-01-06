@@ -11,7 +11,7 @@
         android:layout_height="wrap_content"
         android:padding="28dp"
         android:textColor="@color/colorBlack"
-        android:textSize="25sp" />
+        android:textSize="26sp" />
 
     <TextView
         android:id="@+id/tv_dialog_message"
@@ -19,13 +19,13 @@
         android:layout_height="wrap_content"
         android:paddingHorizontal="28dp"
         android:textColor="#666666"
-        android:textSize="22sp" />
+        android:textSize="23sp" />
 
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|right"
-        android:layout_marginTop="29dp"
+        android:layout_marginTop="15dp"
         android:layout_marginEnd="10dp"
         android:layout_marginBottom="10dp"
         android:orientation="horizontal">
@@ -35,23 +35,23 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="?attr/selectableItemBackground"
-            android:paddingHorizontal="14dp"
-            android:paddingVertical="14dp"
+            android:paddingHorizontal="18dp"
+            android:paddingVertical="16dp"
             android:text="@string/cancel"
             android:textColor="#e6654e"
-            android:textSize="22sp" />
+            android:textSize="23sp" />
 
         <TextView
             android:id="@+id/tv_dialog_ok"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="12dp"
+            android:layout_marginStart="15dp"
             android:background="?attr/selectableItemBackground"
-            android:paddingHorizontal="12dp"
-            android:paddingVertical="14dp"
+            android:paddingHorizontal="18dp"
+            android:paddingVertical="16dp"
             android:text="@string/ok"
             android:textColor="#e6654e"
-            android:textSize="22sp" />
+            android:textSize="23sp" />
     </LinearLayout>
 
 </LinearLayout>

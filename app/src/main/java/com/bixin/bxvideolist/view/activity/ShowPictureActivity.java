@@ -126,7 +126,7 @@ public class ShowPictureActivity extends Activity implements ViewPager.OnPageCha
         tvPictureName.setText(name.substring(name.lastIndexOf("/") + 1));
     }
 
-    public void dissmissControlView() {
+    public void dismissControlView() {
         if (llStatus.getVisibility() == View.GONE) {
             llStatus.setVisibility(View.VISIBLE);
         } else {
@@ -146,6 +146,12 @@ public class ShowPictureActivity extends Activity implements ViewPager.OnPageCha
         for (String path : picPaths) {
             ImageView imageView = new ImageView(this);
 //            Glide.with(mContext).load(path).into(imageView);
+            imageView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    dismissControlView();
+                }
+            });
             imageViewList.add(imageView);
         }
     }
