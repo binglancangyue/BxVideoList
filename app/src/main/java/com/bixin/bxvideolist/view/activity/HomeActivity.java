@@ -122,6 +122,7 @@ public class HomeActivity extends RxAppCompatActivity implements View.OnClickLis
             doLockFile(R.id.delete);
         }
     }
+
     private void sendBroadcastForStopRecording() {
 //        Intent intent = new Intent();
 //        intent.setAction(CustomValue.ACTION_STOP_RECORD);
@@ -403,7 +404,7 @@ public class HomeActivity extends RxAppCompatActivity implements View.OnClickLis
         ctlNormalVideo.setOnClickListener(myOnClickListener);
         ctlLockVideo.setOnClickListener(myOnClickListener);
         ctlPicture.setOnClickListener(myOnClickListener);
-        ImageView ivBack=findViewById(R.id.iv_back);
+        ImageView ivBack = findViewById(R.id.iv_back);
         ivBack.setOnClickListener(this);
 //        mViewPager.setOffscreenPageLimit(2);
         if (CustomValue.IS_KD003) {
@@ -527,7 +528,6 @@ public class HomeActivity extends RxAppCompatActivity implements View.OnClickLis
 
     /**
      * 模拟系统按键。
-
      *
      * @param keyCode
      */
@@ -767,6 +767,8 @@ public class HomeActivity extends RxAppCompatActivity implements View.OnClickLis
             ToastUtils.showToast(R.string.exit_app);
 //            mInnerHandler.sendEmptyMessageDelayed(CustomValue.HANDLE_EXIT_APP, 2000);
         } else {
+            Settings.Global.putInt(getContentResolver(), CAMERA_RECORD_STOP, 0);
+            Log.d(TAG, "CAMERA_RECORD_STOP");
             System.exit(0);
         }
     }
