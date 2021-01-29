@@ -30,6 +30,7 @@ import com.bixin.bxvideolist.model.bean.VideoBean;
 import com.bixin.bxvideolist.model.bean.VideoPlayerBean;
 import com.bixin.bxvideolist.model.listener.OnFinishVideoActivityListener;
 import com.bixin.bxvideolist.model.listener.OnRecyclerViewItemListener;
+import com.bixin.bxvideolist.model.tools.CallBackManagement;
 import com.bixin.bxvideolist.model.tools.MyJzvdStd;
 import com.bixin.bxvideolist.model.tools.ToastUtils;
 import com.bumptech.glide.Glide;
@@ -426,6 +427,7 @@ public class VideoPlayerActivity extends RxAppCompatActivity implements View.OnC
                     public void accept(String s) throws Exception {
                         Log.d(TAG, "accept: s "+s);
                         if (!s.equals("fail")){
+                            CallBackManagement.getInstance().updatePicture(s);
                             ToastUtils.showToast("螢幕拍照完成");
                         }else{
                             ToastUtils.showToast("螢幕拍照失败");

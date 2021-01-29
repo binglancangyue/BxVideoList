@@ -13,14 +13,14 @@ android {
     buildToolsVersion '29.0.3'
     defaultConfig {
         applicationId "com.bixin.bxvideolist"
-        minSdkVersion 19
+        minSdkVersion 23
         //noinspection OldTargetApi
         targetSdkVersion 27
         versionCode 1
         vectorDrawables.useSupportLibrary = true
         testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
         signingConfig signingConfigs.debugConfig
-        versionName '1.0.210106.1'
+        versionName '1.0.210129.1'
     }
     buildTypes {
         release {

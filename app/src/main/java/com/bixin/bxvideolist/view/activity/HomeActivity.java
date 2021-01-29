@@ -38,6 +38,8 @@ import com.bixin.bxvideolist.model.DvrAIDL;
 import com.bixin.bxvideolist.model.bean.VideoBean;
 import com.bixin.bxvideolist.model.listener.OnDialogListener;
 import com.bixin.bxvideolist.model.listener.OnRecyclerViewItemListener;
+import com.bixin.bxvideolist.model.listener.OnUpdateListener;
+import com.bixin.bxvideolist.model.tools.CallBackManagement;
 import com.bixin.bxvideolist.model.tools.MediaData;
 import com.bixin.bxvideolist.model.tools.ShowDialogTool;
 import com.bixin.bxvideolist.model.tools.ToastUtils;
@@ -66,7 +68,7 @@ import io.reactivex.schedulers.Schedulers;
 
 
 public class HomeActivity extends RxAppCompatActivity implements View.OnClickListener,
-        OnRecyclerViewItemListener, OnDialogListener {
+        OnRecyclerViewItemListener, OnDialogListener, OnUpdateListener {
     private static final String TAG = "HomeActivity";
     private Context mContext;
     private ViewPager mViewPager;
@@ -266,6 +268,7 @@ public class HomeActivity extends RxAppCompatActivity implements View.OnClickLis
         mDialogTool = new ShowDialogTool(this, this);
         mFileTool = new VideoListOperationTool();
         compositeDisposable = new CompositeDisposable();
+        CallBackManagement.getInstance().setOnUpdateListener(this);
         state = 1;
         try {
             state = Settings.Global.getInt(getContentResolver(), CAMERA_RECORD_STATUS);
@@ -880,6 +883,20 @@ public class HomeActivity extends RxAppCompatActivity implements View.OnClickLis
     }
 
     @Override
+    public void updatePicture(String path) {
+        Log.d(TAG, "updatePicture: ");
+        File file = new File(path);
+        VideoBean videoBean = new VideoBean();
+        videoBean.setPath(path);
+        videoBean.setName(file.getName());
+        pictureList.add(videoBean);
+        if (pictureAdapter != null) {
+            pictureAdapter.setData(pictureList);
+            pictureAdapter.notifyDataSetChanged();
+        }
+    }
+
+    @Override
     protected void onStart() {
         super.onStart();
 //        addFloatWindow();
@@ -904,6 +921,7 @@ public class HomeActivity extends RxAppCompatActivity implements View.OnClickLis
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        CallBackManagement.getInstance().setOnUpdateListener(null);
         if (mInnerHandler != null) {
             mInnerHandler.removeCallbacksAndMessages(null);
             mInnerHandler = null;
