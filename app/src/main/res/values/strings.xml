@@ -2,7 +2,7 @@
     <string name="app_name">VideoList</string>
     <string name="menu_settings">Settings</string>
     <string name="dialog_title">prompt</string>
-    <string name="button_ok">Determine</string>
+    <string name="button_ok">OK</string>
     <string name="button_cancel">Cancel</string>
     <string name="prompt_stop_recorde">View the video file will stop recording, whether to view?</string>
     <string name="prompt_lock_video">Lock selected videos?</string>

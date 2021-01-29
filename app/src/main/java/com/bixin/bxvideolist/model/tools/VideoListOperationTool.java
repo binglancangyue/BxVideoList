@@ -1,6 +1,5 @@
 package com.bixin.bxvideolist.model.tools;
 
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -15,9 +14,6 @@ import com.bixin.bxvideolist.view.activity.VideoPlayerActivity;
 
 import java.io.File;
 import java.util.List;
-
-import static com.bixin.bxvideolist.model.CustomValue.VIDEO_PLAYER_ACTIVITY;
-import static com.bixin.bxvideolist.model.CustomValue.VIDEO_PLAYER_PACKAGE_NAME;
 
 
 /**
@@ -166,6 +162,8 @@ public class VideoListOperationTool {
      * @param changedList 改变后的list
      */
     public void fileManagement(List<VideoBean> currentList, List<VideoBean> changedList) {
+        String lockPath = StoragePaTool.getStoragePath(true) + "/DVR-BX/LockVideo/";
+        String videoPath = StoragePaTool.getStoragePath(true) + "/DVR-BX/Video/";
         for (int i = 0; i < currentList.size(); i++) {
             if (currentList.get(i).getSelect()) {
                 int ctr = currentList.get(i).getCTR();
@@ -177,21 +175,21 @@ public class VideoListOperationTool {
                     Log.d(TAG, "fileManagement: " + path + "\n" + name + "\n"
                             + currentList.get(i).toString());
                     File file = new File(path);
-                    /*if (ctr == CTR_LOCK) {
-                        path = path.substring(0, path.length() - 3) + "_impact.ts";
-                        name = name.substring(0, name.length() - 3) + "_impact.ts";
-                    } else {
-                        path = path.substring(0, path.length() - 10) + ".ts";
-                        name = name.substring(0, name.length() - 10) + ".ts";
-                    }*/
-                    if (ctr == CustomValue.CTR_LOCK) {
-                        path = path.substring(0, path.length() - 4) + "_impact.mp4";
-                        name = name.substring(0, name.length() - 4) + "_impact.mp4";
+                   /* if (ctr == CustomValue.CTR_LOCK) {
+                        path = "lock_" + path.substring(0, path.length() - 4) + ".mp4";
+                        name = "lock_" + name.substring(0, name.length() - 4) + ".mp4";
                     } else {
                         path = path.substring(0, path.length() - 11) + ".mp4";
                         name = name.substring(0, name.length() - 11) + ".mp4";
+                    }*/
+                    if (ctr == CustomValue.CTR_LOCK) {
+                        name = "lock_" + name;
+                        path = lockPath + name;
+                    } else {
+                        name = name.replace("lock_", "");
+                        path = videoPath + name;
                     }
-                    Log.d(TAG, "fileManagement: " + name);
+                    Log.d(TAG, "fileManagement: " + path);
                     File reNameFile = new File(path);
                     file.renameTo(reNameFile);
                     VideoBean bean = new VideoBean();
@@ -214,4 +212,5 @@ public class VideoListOperationTool {
         MediaData.listSort(changedList);
 //        mInnerHandler.sendEmptyMessageDelayed(CustomValue.CLOSE_DIALOG, 200);
     }
+
 }
