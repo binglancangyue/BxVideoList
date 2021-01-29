@@ -121,7 +121,7 @@ public class VideoPlayerActivity extends RxAppCompatActivity implements View.OnC
     private void initView() {
 //        xRecyclerView = findViewById(R.id.ryc_list);
         jcVideoPlayer = findViewById(R.id.jcv_player);
-        ImageView screenShot=jcVideoPlayer.findViewById(R.id.iv_screen_shot);
+        ImageView screenShot = jcVideoPlayer.findViewById(R.id.iv_screen_shot);
         screenShot.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -411,25 +411,24 @@ public class VideoPlayerActivity extends RxAppCompatActivity implements View.OnC
         }
     }
 
-
     @SuppressLint("CheckResult")
     private void screenshot() {
         long time = jcVideoPlayer.getTime();
         compositeDisposable.add(Observable.create(new ObservableOnSubscribe<String>() {
             @Override
             public void subscribe(ObservableEmitter<String> emitter) throws Exception {
-                jcVideoPlayer.doScreenshot(time,emitter);
+                jcVideoPlayer.doScreenshot(time, emitter);
             }
         }).subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .compose(bindUntilEvent(ActivityEvent.DESTROY)).subscribe(new Consumer<String>() {
                     @Override
                     public void accept(String s) throws Exception {
-                        Log.d(TAG, "accept: s "+s);
-                        if (!s.equals("fail")){
+                        Log.d(TAG, "accept: s " + s);
+                        if (!s.equals("fail")) {
                             CallBackManagement.getInstance().updatePicture(s);
                             ToastUtils.showToast("螢幕拍照完成");
-                        }else{
+                        } else {
                             ToastUtils.showToast("螢幕拍照失败");
                         }
                     }

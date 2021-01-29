@@ -546,15 +546,15 @@ public class MyJzvdStd extends JzvdStd {
 
     public void doScreenshot(long time, ObservableEmitter<String> emitter) {
         String videoPath = mVideoBeanList.get(mCurrentVideoIndex).getPath();
-        Log.d(TAG, "aaaP: video " + videoPath);
+        Log.d(TAG, "aaaP: video " + videoPath+" time "+time);
         MediaMetadataRetriever mmr = new MediaMetadataRetriever();
         mmr.setDataSource(videoPath);
-        Bitmap frameBitmap = mmr.getFrameAtTime(time);
+        Bitmap frameBitmap = mmr.getFrameAtTime(time * 1000);
         mmr.release();
         File file = new File(createPictureName());
         Log.d(TAG, "aaaP: filePath picture " + file.getAbsolutePath());
         try (FileOutputStream os = new FileOutputStream(file)) {
-            frameBitmap.compress(Bitmap.CompressFormat.JPEG, 100, os);
+            frameBitmap.compress(Bitmap.CompressFormat.JPEG, 80, os);
             os.flush();
             os.close();
             emitter.onNext(file.getAbsolutePath());
