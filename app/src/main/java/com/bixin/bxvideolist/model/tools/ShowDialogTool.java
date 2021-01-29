@@ -79,7 +79,7 @@ public class ShowDialogTool {
             } else {
                 builder.setMessage(R.string.prompt_unlock_video);
             }
-            builder.setTitle(R.string.dialog_title);
+            builder.setTitle("");
             builder.setPositiveButton(R.string.button_ok, (dialog, which) -> {
                 dialog.dismiss();
                 showWaitingDialog();
