@@ -5,6 +5,7 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.view.Gravity;
+import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.LinearLayout;
@@ -97,7 +98,7 @@ public class ShowDialogTool {
     /**
      * 显示是否停止录像的 Dialog
      */
-    public void showStopRecordingDialog() {
+/*    public void showStopRecordingDialog() {
         if (mStopRecordingDialog == null) {
             AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
             builder.setTitle(R.string.stop_dialog_title);
@@ -135,6 +136,49 @@ public class ShowDialogTool {
             mStopRecordingDialog.getWindow().setAttributes(params);
         }
         showDialog(mStopRecordingDialog);
+    }*/
+    public void showStopRecordingDialog(Context context) {
+        if (mStopRecordingDialog == null) {
+            AlertDialog.Builder builder = new AlertDialog.Builder(context);
+            View view = View.inflate(context, R.layout.dialog_layout, null);
+          /*  LinearLayout.LayoutParams layoutParams = (LinearLayout.LayoutParams) view.getLayoutParams();
+            layoutParams.width = 280;*/
+            builder.setView(view);
+            TextView title = view.findViewById(R.id.tv_dialog_title);
+            TextView message = view.findViewById(R.id.tv_dialog_message);
+            TextView negativeButton = view.findViewById(R.id.tv_dialog_cancel);
+            TextView positiveButton = view.findViewById(R.id.tv_dialog_ok);
+            title.setText(R.string.stop_dialog_title);
+            message.setText("查看影像檔案將會停止錄影\n是否確認查看?");
+            builder.setOnCancelListener(new DialogInterface.OnCancelListener() {
+                @Override
+                public void onCancel(DialogInterface dialogInterface) {
+                    mStopRecordingDialog.dismiss();
+//                    finish();
+                    sendToActivity(2);
+                }
+            });
+            negativeButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    mStopRecordingDialog.dismiss();
+//                    finish();
+                    sendToActivity(2);
+                }
+            });
+            positiveButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    mStopRecordingDialog.dismiss();
+//                    mViewPager.setVisibility(View.VISIBLE);
+                    sendToActivity(1);
+
+                }
+            });
+            mStopRecordingDialog = builder.create();
+        }
+        showAlertDialog(mStopRecordingDialog);
+//        showDialog(stopRecordDialog);
     }
 
     /**
@@ -233,5 +277,14 @@ public class ShowDialogTool {
         } catch (IllegalAccessException | NoSuchFieldException e) {
             e.printStackTrace();
         }
+    }
+
+    private void showAlertDialog(AlertDialog alertDialog) {
+        alertDialog.show();
+        WindowManager.LayoutParams params =
+                alertDialog.getWindow().getAttributes();
+        params.width = 500;
+        alertDialog.getWindow().setAttributes(params);
+
     }
 }
