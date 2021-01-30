@@ -137,10 +137,10 @@ public class ShowDialogTool {
         }
         showDialog(mStopRecordingDialog);
     }*/
-    public void showStopRecordingDialog(Context context) {
+    public void showStopRecordingDialog() {
         if (mStopRecordingDialog == null) {
-            AlertDialog.Builder builder = new AlertDialog.Builder(context);
-            View view = View.inflate(context, R.layout.dialog_layout, null);
+            AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
+            View view = View.inflate(mContext, R.layout.dialog_layout, null);
           /*  LinearLayout.LayoutParams layoutParams = (LinearLayout.LayoutParams) view.getLayoutParams();
             layoutParams.width = 280;*/
             builder.setView(view);
