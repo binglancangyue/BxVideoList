@@ -22,7 +22,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="10dp"
-            android:padding="10dp"
+            android:padding="20dp"
             android:src="@drawable/selector_pic_back" />
 
         <TextView
@@ -31,6 +31,6 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="10dp"
             android:textColor="@color/colorWhite"
-            android:textSize="18sp" />
+            android:textSize="23sp" />
     </LinearLayout>
 </FrameLayout>
