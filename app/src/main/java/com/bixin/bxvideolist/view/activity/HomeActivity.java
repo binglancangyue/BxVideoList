@@ -715,6 +715,8 @@ public class HomeActivity extends RxActivity implements View.OnClickListener,
             ToastUtils.showToast(R.string.exit_app);
             mInnerHandler.sendEmptyMessageDelayed(CustomValue.HANDLE_EXIT_APP, 2000);
         } else {
+            Intent intent = new Intent("com.bixin.bxvideolist.action.start_recording");
+            sendBroadcast(intent);
             System.exit(0);
         }
     }
