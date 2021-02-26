@@ -1,0 +1,34 @@
+Index: app/build.gradle
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>apply plugin: 'com.android.application'\r\n\r\nandroid {\r\n    signingConfigs {\r\n        debugConfig {\r\n            storeFile file('E:\\\\AndroidStudioWork\\\\BxVideoList\\\\BxVideoList.jks')\r\n            storePassword '565405388'\r\n            keyPassword '565405388'\r\n            keyAlias = 'BxVideoList'\r\n        }\r\n    }\r\n    compileSdkVersion 28\r\n    buildToolsVersion '29.0.3'\r\n    defaultConfig {\r\n        applicationId \"com.bixin.bxvideolist\"\r\n        minSdkVersion 23\r\n        //noinspection OldTargetApi\r\n        targetSdkVersion 27\r\n        versionCode 1\r\n        vectorDrawables.useSupportLibrary = true\r\n        testInstrumentationRunner \"android.support.test.runner.AndroidJUnitRunner\"\r\n        signingConfig signingConfigs.debugConfig\r\n        versionName '1.0.210223.1'\r\n    }\r\n    buildTypes {\r\n        release {\r\n            // 开启混淆\r\n            minifyEnabled false\r\n            // Zipalign压缩优化\r\n            zipAlignEnabled true\r\n            // 移除无用的资源文件\r\n            shrinkResources false\r\n            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'\r\n        }\r\n        debug {\r\n            signingConfig signingConfigs.debugConfig\r\n        }\r\n    }\r\n    compileOptions {\r\n        sourceCompatibility = 1.8\r\n        targetCompatibility = 1.8\r\n    }\r\n    ndkVersion '22.0.7026061'\r\n\r\n}\r\n\r\ndependencies {\r\n    implementation fileTree(dir: 'libs', include: ['*.jar'])\r\n    //noinspection GradleCompatible\r\n    implementation 'com.android.support:appcompat-v7:28.0.0'\r\n    implementation 'com.android.support.constraint:constraint-layout:2.0.4'\r\n    implementation 'com.android.support:design:28.0.0'\r\n\r\n\r\n    implementation 'com.jcodecraeer:xrecyclerview:1.5.9'\r\n    implementation 'com.github.bumptech.glide:glide:4.9.0'\r\n    annotationProcessor 'com.github.bumptech.glide:compiler:4.9.0'\r\n    implementation 'com.alibaba:fastjson:1.2.75'\r\n\r\n    implementation 'io.reactivex.rxjava2:rxjava:2.2.4'\r\n    implementation 'io.reactivex.rxjava2:rxandroid:2.1.0'\r\n    implementation 'com.trello.rxlifecycle2:rxlifecycle-components:2.2.2'\r\n    implementation 'com.trello.rxlifecycle2:rxlifecycle-navi:2.2.2'\r\n    implementation 'com.tbruyelle.rxpermissions2:rxpermissions:0.9.4@aar'\r\n    implementation 'cn.jzvd:jiaozivideoplayer:7.1.0'\r\n\r\n}\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/build.gradle	(revision 8bc691e046c43af9a72846e410783b73f442b81b)
++++ app/build.gradle	(date 1614308329649)
+@@ -13,14 +13,14 @@
+     buildToolsVersion '29.0.3'
+     defaultConfig {
+         applicationId "com.bixin.bxvideolist"
+-        minSdkVersion 23
++        minSdkVersion 19
+         //noinspection OldTargetApi
+         targetSdkVersion 27
+         versionCode 1
+         vectorDrawables.useSupportLibrary = true
+         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+         signingConfig signingConfigs.debugConfig
+-        versionName '1.0.210223.1'
++        versionName '1.0.210131.1'
+     }
+     buildTypes {
+         release {
+@@ -51,7 +51,6 @@
+     implementation 'com.android.support.constraint:constraint-layout:2.0.4'
+     implementation 'com.android.support:design:28.0.0'
+ 
+-
+     implementation 'com.jcodecraeer:xrecyclerview:1.5.9'
+     implementation 'com.github.bumptech.glide:glide:4.9.0'
+     annotationProcessor 'com.github.bumptech.glide:compiler:4.9.0'

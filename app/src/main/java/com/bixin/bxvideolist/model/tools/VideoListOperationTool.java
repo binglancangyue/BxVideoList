@@ -27,7 +27,13 @@ import static com.bixin.bxvideolist.model.CustomValue.VIDEO_PLAYER_PACKAGE_NAME;
  */
 public class VideoListOperationTool {
     private static final String TAG = "VideoListOperationTool";
+    private String lockPath;
+    private String videoPath;
 
+    public VideoListOperationTool() {
+        lockPath = StoragePaTool.getStoragePath(true) + "/DVR-BX/LockVideo/";
+        videoPath = StoragePaTool.getStoragePath(true) + "/DVR-BX/Video/";
+    }
 
     /**
      * 跳转播放器应用
@@ -185,13 +191,13 @@ public class VideoListOperationTool {
                         name = name.substring(0, name.length() - 10) + ".ts";
                     }*/
                     if (ctr == CustomValue.CTR_LOCK) {
-                        path = path.substring(0, path.length() - 4) + "_impact.mp4";
-                        name = name.substring(0, name.length() - 4) + "_impact.mp4";
+                        name = "lock_" + name;
+                        path = lockPath + name;
                     } else {
-                        path = path.substring(0, path.length() - 11) + ".mp4";
-                        name = name.substring(0, name.length() - 11) + ".mp4";
+                        name = name.replace("lock_", "");
+                        path = videoPath + name;
                     }
-                    Log.d(TAG, "fileManagement: " + name);
+                    Log.d(TAG, "fileManagement: " + path);
                     File reNameFile = new File(path);
                     file.renameTo(reNameFile);
                     VideoBean bean = new VideoBean();

@@ -34,7 +34,6 @@ import com.bixin.bxvideolist.model.tools.ShowDialogTool;
 import com.bixin.bxvideolist.model.tools.ToastUtils;
 import com.bixin.bxvideolist.model.tools.VideoListOperationTool;
 import com.bixin.bxvideolist.view.customview.CustomRecyclerView;
-import com.bx.carDVR.bylym.myaidl.FileListInterface;
 import com.tbruyelle.rxpermissions2.Permission;
 import com.tbruyelle.rxpermissions2.RxPermissions;
 import com.trello.rxlifecycle2.android.ActivityEvent;
@@ -89,7 +88,7 @@ public class HomeActivity extends RxActivity implements View.OnClickListener,
     private boolean isExit = false;
     private boolean isNotShowDialog = true;
     private DvrAIDL dvrAIDL;
-    private FileListInterface listInterface;
+//    private FileListInterface listInterface;
 
     @Override
     public void doSomething(int type) {
@@ -230,9 +229,9 @@ public class HomeActivity extends RxActivity implements View.OnClickListener,
         mDialogTool = new ShowDialogTool(this, this);
         mFileTool = new VideoListOperationTool();
         compositeDisposable = new CompositeDisposable();
-        if (CustomValue.IS_3IN) {
-            bindAIDLService();
-        }
+//        if (CustomValue.IS_3IN) {
+//            bindAIDLService();
+//        }
     }
 
     private void initData() {
@@ -725,7 +724,7 @@ public class HomeActivity extends RxActivity implements View.OnClickListener,
     }
 
 
-    public void bindAIDLService() {
+/*    public void bindAIDLService() {
         Intent intent = new Intent();
         intent.setPackage("com.bx.carDVR");
         intent.setAction("com.bx.carDVR.aidl_service");
@@ -734,8 +733,9 @@ public class HomeActivity extends RxActivity implements View.OnClickListener,
 
     public void unBingAIDLService() {
         mContext.unbindService(serviceConnection);
-    }
+    }*/
 
+/*
     private ServiceConnection serviceConnection = new ServiceConnection() {
         @Override
         public void onServiceConnected(ComponentName name, IBinder service) {
@@ -767,6 +767,7 @@ public class HomeActivity extends RxActivity implements View.OnClickListener,
         }
 
     };
+*/
 
     @Override
     protected void onStop() {
@@ -789,8 +790,8 @@ public class HomeActivity extends RxActivity implements View.OnClickListener,
             compositeDisposable = null;
         }
         loadingDialogDismiss();
-        if (CustomValue.IS_3IN) {
-            unBingAIDLService();
-        }
+//        if (CustomValue.IS_3IN) {
+//            unBingAIDLService();
+//        }
     }
 }
