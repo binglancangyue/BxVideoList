@@ -103,6 +103,7 @@ lint/tmp/
 .idea/inspectionProfiles/
 .idea/jarRepositories.xml
 .idea/misc.xml
+.idea/shelf
 .idea/runConfigurations.xml
 .idea/vcs.xml
 app/release/
