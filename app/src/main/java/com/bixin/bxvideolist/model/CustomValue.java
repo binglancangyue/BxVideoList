@@ -31,6 +31,7 @@ public class CustomValue {
 
     public static final String KEY_VIDEO_PLAYER_BEAN = "video_player_bean";
     public static final String ACTION_STOP_RECORD = "com.bixin.bxvideolist.action.stop_recording";
+    public static final String CAMERA_RECORD_STATUS = "camera_record_status";
 
     public static final int HANDLE_EXIT_APP = 1;
     public static final int UPDATE_BUTTON_BG = 2;

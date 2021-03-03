@@ -13,6 +13,7 @@ import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
 import android.os.RemoteException;
+import android.provider.Settings;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.view.ViewPager;
 import android.util.Log;
@@ -88,6 +89,7 @@ public class HomeActivity extends RxActivity implements View.OnClickListener,
     private boolean isExit = false;
     private boolean isNotShowDialog = true;
     private FileListInterface listInterface;
+    private int isRecording = 0;
 
     @Override
     public void doSomething(int type) {
@@ -157,6 +159,7 @@ public class HomeActivity extends RxActivity implements View.OnClickListener,
                         break;
                 }
             }
+            removeMessages(msg.what);
         }
     }
 
@@ -180,6 +183,7 @@ public class HomeActivity extends RxActivity implements View.OnClickListener,
             view = getLayoutInflater().inflate(R.layout.activity_main, null);
         }
         setContentView(view);
+        isRecording = Settings.Global.getInt(getContentResolver(), CustomValue.CAMERA_RECORD_STATUS, 0);
         init();
         initView();
 //        initData();
@@ -232,7 +236,11 @@ public class HomeActivity extends RxActivity implements View.OnClickListener,
 
     private void initData() {
         if (!CustomValue.IS_3IN) {
-            mDialogTool.showStopRecordingDialog();
+            if (isRecording == 1) {
+                mDialogTool.showStopRecordingDialog();
+            } else {
+                mViewPager.setVisibility(View.VISIBLE);
+            }
         }
         getWindow().getDecorView().post(new Runnable() {
             @Override
@@ -715,12 +723,10 @@ public class HomeActivity extends RxActivity implements View.OnClickListener,
             ToastUtils.showToast(R.string.exit_app);
             mInnerHandler.sendEmptyMessageDelayed(CustomValue.HANDLE_EXIT_APP, 2000);
         } else {
-            Intent intent = new Intent("com.bixin.bxvideolist.action.start_recording");
-            sendBroadcast(intent);
-            System.exit(0);
+            Log.d(TAG, "exit: ");
+            finish();
         }
     }
-
 
     public void bindAIDLService() {
         Intent intent = new Intent();
@@ -768,6 +774,7 @@ public class HomeActivity extends RxActivity implements View.OnClickListener,
     @Override
     protected void onStop() {
         super.onStop();
+        Log.d(TAG, "onStop: isNotShowDialog " + isNotShowDialog);
         if (isNotShowDialog) {
             finish();
         }
@@ -775,7 +782,12 @@ public class HomeActivity extends RxActivity implements View.OnClickListener,
 
     @Override
     protected void onDestroy() {
+        if (isRecording == 1) {
+            Intent intent = new Intent("com.bixin.bxvideolist.action.start_recording");
+            sendBroadcast(intent);
+        }
         super.onDestroy();
+        Log.d(TAG, "onDestroy: ");
         if (mInnerHandler != null) {
             mInnerHandler.removeCallbacksAndMessages(null);
             mInnerHandler = null;
@@ -787,7 +799,8 @@ public class HomeActivity extends RxActivity implements View.OnClickListener,
         }
         loadingDialogDismiss();
         if (CustomValue.IS_3IN) {
-            unBingAIDLService();
+//            unBingAIDLService();
         }
+        System.exit(0);
     }
 }
