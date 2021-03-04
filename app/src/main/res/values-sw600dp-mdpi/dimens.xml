@@ -25,4 +25,5 @@
     <dimen name="videoInfoHeight">100dp</dimen>
     <dimen name="videoImageWidth">160dp</dimen>
     <dimen name="videoImageHeight">90dp</dimen>
+
 </resources>

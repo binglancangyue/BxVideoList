@@ -8,12 +8,12 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.os.SystemClock;
-import android.support.annotation.NonNull;
-import android.support.v4.content.ContextCompat;
-import android.support.v7.widget.DefaultItemAnimator;
-import android.support.v7.widget.DividerItemDecoration;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
+import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
+import androidx.recyclerview.widget.DefaultItemAnimator;
+import androidx.recyclerview.widget.DividerItemDecoration;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
@@ -276,7 +276,7 @@ public class VideoPlayerActivity extends RxActivity implements View.OnClickListe
     private void playVideo(String videoPath, String name) {
         jcVideoPlayer.setUp(videoPath, name, JzvdStd.SCREEN_NORMAL);
         jcVideoPlayer.startVideo();
-        Glide.with(mContext).load(videoPath).into(jcVideoPlayer.thumbImageView);
+//        Glide.with(mContext).load(videoPath).into(jcVideoPlayer.thumbImageView);
     }
 
     @Override

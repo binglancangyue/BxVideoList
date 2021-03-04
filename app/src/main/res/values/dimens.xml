@@ -26,4 +26,6 @@
     <dimen name="videoInfoHeight">100dp</dimen>
     <dimen name="videoImageWidth">160dp</dimen>
     <dimen name="videoImageHeight">90dp</dimen>
+    <dimen name="jz_start_button_w_h_fullscreen">75dp</dimen>
+    <dimen name="jz_start_button_w_h_normal">55dp</dimen>
 </resources>

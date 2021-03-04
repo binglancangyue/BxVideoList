@@ -6,9 +6,8 @@ import android.content.IntentFilter;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.support.v4.view.ViewPager;
+import androidx.viewpager.widget.ViewPager;
 import android.util.Log;
-import android.view.KeyEvent;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -19,7 +18,6 @@ import com.bixin.bxvideolist.adapter.PicturePageAdapter;
 import com.bixin.bxvideolist.model.CustomValue;
 import com.bixin.bxvideolist.model.receiver.PictureBroadcastReceiver;
 
-import java.io.File;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
