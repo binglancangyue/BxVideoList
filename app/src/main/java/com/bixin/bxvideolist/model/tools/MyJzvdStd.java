@@ -560,6 +560,7 @@ public class MyJzvdStd extends JzvdStd {
             emitter.onNext(file.getAbsolutePath());
         } catch (Exception e) {
             e.printStackTrace();
+            Log.e(TAG, "doScreenshot Exception : "+e.getMessage());
             emitter.onNext("fail");
         }
     }

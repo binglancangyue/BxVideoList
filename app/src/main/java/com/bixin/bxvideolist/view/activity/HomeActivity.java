@@ -42,6 +42,7 @@ import com.bixin.bxvideolist.model.listener.OnUpdateListener;
 import com.bixin.bxvideolist.model.tools.CallBackManagement;
 import com.bixin.bxvideolist.model.tools.MediaData;
 import com.bixin.bxvideolist.model.tools.ShowDialogTool;
+import com.bixin.bxvideolist.model.tools.StoragePaTool;
 import com.bixin.bxvideolist.model.tools.ToastUtils;
 import com.bixin.bxvideolist.model.tools.VideoListOperationTool;
 import com.bixin.bxvideolist.view.customview.CustomRecyclerView;
@@ -223,7 +224,7 @@ public class HomeActivity extends RxAppCompatActivity implements View.OnClickLis
 //        initData();
 //        requestPermissions(HomeActivity.this);
         initData();
-
+        createPicturePath();
     }
 
     private void setStatusBarVisible(boolean show) {
@@ -893,6 +894,14 @@ public class HomeActivity extends RxAppCompatActivity implements View.OnClickLis
         if (pictureAdapter != null) {
             pictureAdapter.setData(pictureList);
             pictureAdapter.notifyDataSetChanged();
+        }
+    }
+
+    private void createPicturePath() {
+        String path = StoragePaTool.getStoragePath(true) + "/DVR-BX/Picture/";
+        File file = new File(path);
+        if (!file.exists()) {
+            file.mkdirs();
         }
     }
 
