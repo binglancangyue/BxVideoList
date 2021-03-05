@@ -922,7 +922,9 @@ public class HomeActivity extends RxAppCompatActivity implements View.OnClickLis
     @Override
     protected void onStop() {
         super.onStop();
+        Log.d(TAG, "onStop:isNotShowDialog " + isNotShowDialog);
         if (isNotShowDialog) {
+            Settings.Global.putInt(getContentResolver(), CAMERA_RECORD_STOP, 0);
             finish();
         }
     }
