@@ -8,6 +8,7 @@ import android.view.Gravity;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -146,8 +147,8 @@ public class ShowDialogTool {
             builder.setView(view);
             TextView title = view.findViewById(R.id.tv_dialog_title);
             TextView message = view.findViewById(R.id.tv_dialog_message);
-            TextView negativeButton = view.findViewById(R.id.tv_dialog_cancel);
-            TextView positiveButton = view.findViewById(R.id.tv_dialog_ok);
+            ImageView negativeButton = view.findViewById(R.id.tv_dialog_cancel);
+            ImageView positiveButton = view.findViewById(R.id.tv_dialog_ok);
             title.setText(R.string.stop_dialog_title);
             message.setText("查看影像檔案將會停止錄影\n是否確認查看?");
             builder.setOnCancelListener(new DialogInterface.OnCancelListener() {
@@ -283,7 +284,7 @@ public class ShowDialogTool {
         alertDialog.show();
         WindowManager.LayoutParams params =
                 alertDialog.getWindow().getAttributes();
-        params.width = 500;
+        params.width = 400;
         alertDialog.getWindow().setAttributes(params);
 
     }

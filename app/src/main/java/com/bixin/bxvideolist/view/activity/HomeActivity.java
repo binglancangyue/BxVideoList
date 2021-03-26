@@ -13,6 +13,7 @@ import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
 import android.os.RemoteException;
+import android.provider.Settings;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.view.ViewPager;
 import android.util.Log;
@@ -236,9 +237,7 @@ public class HomeActivity extends RxActivity implements View.OnClickListener,
     }
 
     private void initData() {
-        if (!CustomValue.IS_3IN) {
-            mDialogTool.showStopRecordingDialog();
-        }
+        isShowStopRecordingDialog();
         getWindow().getDecorView().post(new Runnable() {
             @Override
             public void run() {
@@ -767,6 +766,15 @@ public class HomeActivity extends RxActivity implements View.OnClickListener,
         }
 
     };
+
+    private void isShowStopRecordingDialog() {
+        int state = Settings.Global.getInt(getContentResolver(), CustomValue.CAMERA_RECORD_STATUS, 0);
+        if (state == 1) {
+            mDialogTool.showStopRecordingDialog();
+        } else {
+            mViewPager.setVisibility(View.VISIBLE);
+        }
+    }
 
     @Override
     protected void onStop() {

@@ -34,7 +34,7 @@ public class CustomValue {
 
     public static final int HANDLE_EXIT_APP = 1;
     public static final int UPDATE_BUTTON_BG = 2;
-
+    public static final String CAMERA_RECORD_STATUS = "camera_record_status";
     public static final boolean IS_KD003 = false;
     public static final boolean IS_3IN = false;
     public static final boolean IS_966 = false;
