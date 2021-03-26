@@ -31,6 +31,7 @@ import com.bixin.bxvideolist.model.listener.OnDialogListener;
 import com.bixin.bxvideolist.model.listener.OnRecyclerViewItemListener;
 import com.bixin.bxvideolist.model.tools.MediaData;
 import com.bixin.bxvideolist.model.tools.ShowDialogTool;
+import com.bixin.bxvideolist.model.tools.StoragePaTool;
 import com.bixin.bxvideolist.model.tools.ToastUtils;
 import com.bixin.bxvideolist.model.tools.VideoListOperationTool;
 import com.bixin.bxvideolist.view.customview.CustomRecyclerView;
@@ -189,6 +190,7 @@ public class HomeActivity extends RxActivity implements View.OnClickListener,
 //        initData();
 //        requestPermissions(HomeActivity.this);
         initData();
+        createLockVideoPath();
     }
 
     private void setStatusBarVisible(boolean show) {
@@ -770,6 +772,14 @@ public class HomeActivity extends RxActivity implements View.OnClickListener,
         }
 
     };
+
+    private void createLockVideoPath() {
+        String path = StoragePaTool.getStoragePath(true) + "/DVR-BX/LockVideo/";
+        File file = new File(path);
+        if (!file.exists()) {
+            file.mkdirs();
+        }
+    }
 
     @Override
     protected void onStop() {

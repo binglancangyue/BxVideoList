@@ -20,7 +20,7 @@ android {
         vectorDrawables.useSupportLibrary = true
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         signingConfig signingConfigs.debugConfig
-        versionName '1.0.210302.3'
+        versionName '1.0.210326.1'
     }
     buildTypes {
         release {
@@ -40,7 +40,7 @@ android {
         sourceCompatibility = 1.8
         targetCompatibility = 1.8
     }
-    ndkVersion '22.0.7026061'
+    ndkVersion '22.1.7171670'
 
 }
 
