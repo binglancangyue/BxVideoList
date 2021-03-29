@@ -8,6 +8,12 @@ android {
             keyPassword '565405388'
             keyAlias = 'BxVideoList'
         }
+        system_release_key {
+            storeFile file('E:\\AndroidStudioWork\\BxVideoList\\release.keystore')
+            storePassword '565405388'
+            keyPassword '565405388'
+            keyAlias 'BxVideoList'
+        }
     }
     compileSdkVersion 28
     buildToolsVersion '29.0.3'

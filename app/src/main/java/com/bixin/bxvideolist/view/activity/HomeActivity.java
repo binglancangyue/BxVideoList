@@ -35,7 +35,6 @@ import com.bixin.bxvideolist.model.tools.StoragePaTool;
 import com.bixin.bxvideolist.model.tools.ToastUtils;
 import com.bixin.bxvideolist.model.tools.VideoListOperationTool;
 import com.bixin.bxvideolist.view.customview.CustomRecyclerView;
-import com.bx.carDVR.bylym.myaidl.FileListInterface;
 import com.tbruyelle.rxpermissions2.Permission;
 import com.tbruyelle.rxpermissions2.RxPermissions;
 import com.trello.rxlifecycle2.android.ActivityEvent;
@@ -89,7 +88,6 @@ public class HomeActivity extends RxActivity implements View.OnClickListener,
     private ImageView ivNormalVideo;
     private boolean isExit = false;
     private boolean isNotShowDialog = true;
-    private FileListInterface listInterface;
     private int isRecording = 0;
 
     @Override
@@ -729,49 +727,6 @@ public class HomeActivity extends RxActivity implements View.OnClickListener,
             finish();
         }
     }
-
-    public void bindAIDLService() {
-        Intent intent = new Intent();
-        intent.setPackage("com.bx.carDVR");
-        intent.setAction("com.bx.carDVR.aidl_service");
-        mContext.bindService(intent, serviceConnection, Context.BIND_AUTO_CREATE);
-    }
-
-    public void unBingAIDLService() {
-        mContext.unbindService(serviceConnection);
-    }
-
-    private ServiceConnection serviceConnection = new ServiceConnection() {
-        @Override
-        public void onServiceConnected(ComponentName name, IBinder service) {
-            listInterface = FileListInterface.Stub.asInterface(service);
-            if (listInterface == null) {
-                Log.d(TAG, "onServiceConnected:null");
-                return;
-            }
-            try {
-                Log.d(TAG, "onServiceConnected: " + listInterface.isRecording());
-                if (listInterface.isRecording()) {
-                    mDialogTool.showStopRecordingDialog();
-                } else {
-                    mViewPager.setVisibility(View.VISIBLE);
-                }
-            } catch (RemoteException e) {
-                Log.e(TAG, "onServiceConnected: " + e.getLocalizedMessage());
-            }
-        }
-
-        @Override
-        public void onServiceDisconnected(ComponentName name) {
-            Log.d(TAG, "onServiceDisconnected: ");
-        }
-
-        @Override
-        public void onNullBinding(ComponentName name) {
-            Log.d(TAG, "onNullBinding: ");
-        }
-
-    };
 
     private void createLockVideoPath() {
         String path = StoragePaTool.getStoragePath(true) + "/DVR-BX/LockVideo/";
