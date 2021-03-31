@@ -3,16 +3,12 @@ package com.bixin.bxvideolist.view.activity;
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
-import android.content.ServiceConnection;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.IBinder;
 import android.os.Message;
-import android.os.RemoteException;
 import android.provider.Settings;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.view.ViewPager;
@@ -152,7 +148,9 @@ public class HomeActivity extends RxActivity implements View.OnClickListener,
                         break;
                     case 7:
                         activity.normalVideoRecyclerView.setHasButton(true);
-
+                        break;
+                    case 8:
+                        activity.doGetVideoData(false);
                         break;
                     default:
                         break;
@@ -250,9 +248,8 @@ public class HomeActivity extends RxActivity implements View.OnClickListener,
                     public void run() {
                         //每次打开应用只显示50数据
                         doGetVideoData(true);
-//                        bindAIDLService();
                         //之后再加载全部数据
-                        doGetVideoData(false);
+                        mInnerHandler.sendEmptyMessageDelayed(8, 2400);
                     }
                 });
             }
@@ -711,7 +708,7 @@ public class HomeActivity extends RxActivity implements View.OnClickListener,
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if (keyCode == KeyEvent.KEYCODE_BACK) {
-            exit();
+            doubleClick();
             return false;
         }
         return super.onKeyDown(keyCode, event);
@@ -733,6 +730,22 @@ public class HomeActivity extends RxActivity implements View.OnClickListener,
         File file = new File(path);
         if (!file.exists()) {
             file.mkdirs();
+        }
+    }
+
+    private long lastClickTime = 0;
+    private static final long DOUBLE_TIME = 1000;
+
+    private void doubleClick() {
+        Log.d(TAG, "doubleClick: ");
+        long currentTimeMillis = System.currentTimeMillis();
+        long time = currentTimeMillis - lastClickTime;
+        lastClickTime = currentTimeMillis;
+        if (time < DOUBLE_TIME) {
+            Log.d(TAG, "doubleClick:go ");
+            finish();
+        } else {
+            ToastUtils.showToast(R.string.exit_app);
         }
     }
 
