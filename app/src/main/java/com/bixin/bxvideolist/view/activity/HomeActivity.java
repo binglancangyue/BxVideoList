@@ -148,7 +148,9 @@ public class HomeActivity extends RxActivity implements View.OnClickListener,
                         break;
                     case 7:
                         activity.normalVideoRecyclerView.setHasButton(true);
-
+                        break;
+                    case 8:
+                        activity.doGetVideoData(false);
                         break;
                     default:
                         break;
@@ -244,7 +246,7 @@ public class HomeActivity extends RxActivity implements View.OnClickListener,
                         doGetVideoData(true);
 //                        bindAIDLService();
                         //之后再加载全部数据
-                        doGetVideoData(false);
+                        mInnerHandler.sendEmptyMessageDelayed(8, 2400);
                     }
                 });
             }
@@ -703,7 +705,7 @@ public class HomeActivity extends RxActivity implements View.OnClickListener,
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if (keyCode == KeyEvent.KEYCODE_BACK) {
-            exit();
+            doubleClick();
             return false;
         }
         return super.onKeyDown(keyCode, event);
@@ -764,6 +766,22 @@ public class HomeActivity extends RxActivity implements View.OnClickListener,
 
     };
 */
+
+    private long lastClickTime = 0;
+    private static final long DOUBLE_TIME = 1000;
+
+    private void doubleClick() {
+        Log.d(TAG, "doubleClick: ");
+        long currentTimeMillis = System.currentTimeMillis();
+        long time = currentTimeMillis - lastClickTime;
+        lastClickTime = currentTimeMillis;
+        if (time < DOUBLE_TIME) {
+            Log.d(TAG, "doubleClick:go ");
+            System.exit(0);
+        } else {
+            ToastUtils.showToast(R.string.exit_app);
+        }
+    }
 
     @Override
     protected void onStop() {
