@@ -8,19 +8,25 @@ android {
             keyPassword '565405388'
             keyAlias = 'BxVideoList'
         }
+        release_key {
+            keyAlias 'BxVideoList'
+            storePassword '565405388'
+            keyPassword '565405388'
+            storeFile file('E:\\AndroidStudioWork\\BxVideoList\\release.keystore')
+        }
     }
     compileSdkVersion 28
     buildToolsVersion '29.0.3'
     defaultConfig {
         applicationId "com.bixin.bxvideolist"
-        minSdkVersion 19
+        minSdkVersion 23
         //noinspection OldTargetApi
         targetSdkVersion 27
         versionCode 1
         vectorDrawables.useSupportLibrary = true
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         signingConfig signingConfigs.debugConfig
-        versionName '1.0.210313.1'
+        versionName '1.0.210331.2'
     }
     buildTypes {
         release {
@@ -40,7 +46,7 @@ android {
         sourceCompatibility = 1.8
         targetCompatibility = 1.8
     }
-    ndkVersion '22.0.7026061'
+    ndkVersion '22.1.7171670'
 
 }
 

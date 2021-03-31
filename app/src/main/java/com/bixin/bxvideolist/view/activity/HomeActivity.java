@@ -3,16 +3,12 @@ package com.bixin.bxvideolist.view.activity;
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
-import android.content.ServiceConnection;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.IBinder;
 import android.os.Message;
-import android.os.RemoteException;
 import android.provider.Settings;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.view.ViewPager;
@@ -35,7 +31,6 @@ import com.bixin.bxvideolist.model.tools.ShowDialogTool;
 import com.bixin.bxvideolist.model.tools.ToastUtils;
 import com.bixin.bxvideolist.model.tools.VideoListOperationTool;
 import com.bixin.bxvideolist.view.customview.CustomRecyclerView;
-import com.bx.carDVR.bylym.myaidl.FileListInterface;
 import com.tbruyelle.rxpermissions2.Permission;
 import com.tbruyelle.rxpermissions2.RxPermissions;
 import com.trello.rxlifecycle2.android.ActivityEvent;
@@ -89,8 +84,8 @@ public class HomeActivity extends RxActivity implements View.OnClickListener,
     private ImageView ivNormalVideo;
     private boolean isExit = false;
     private boolean isNotShowDialog = true;
-    private DvrAIDL dvrAIDL;
-    private FileListInterface listInterface;
+    private static final long DOUBLE_TIME = 1000;
+    private static long lastClickTime = 0;
 
     @Override
     public void doSomething(int type) {
@@ -99,6 +94,7 @@ public class HomeActivity extends RxActivity implements View.OnClickListener,
         } else if (type == 1) {
             sendBroadcastForStopRecording();
             mViewPager.setVisibility(View.VISIBLE);
+//            mInnerHandler.sendEmptyMessageDelayed(8, 1000);
         } else if (type == 2) {
             finish();
         } else {
@@ -154,7 +150,10 @@ public class HomeActivity extends RxActivity implements View.OnClickListener,
                         break;
                     case 7:
                         activity.normalVideoRecyclerView.setHasButton(true);
-
+                        break;
+                    case 8:
+//                        activity.mViewPager.setVisibility(View.VISIBLE);
+                        activity.doGetVideoData(false);
                         break;
                     default:
                         break;
@@ -172,6 +171,7 @@ public class HomeActivity extends RxActivity implements View.OnClickListener,
                 pictureList);
     }
 
+    @SuppressLint("InflateParams")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         setStatusBarVisible(false);
@@ -231,9 +231,6 @@ public class HomeActivity extends RxActivity implements View.OnClickListener,
         mDialogTool = new ShowDialogTool(this, this);
         mFileTool = new VideoListOperationTool();
         compositeDisposable = new CompositeDisposable();
-        if (CustomValue.IS_3IN) {
-            bindAIDLService();
-        }
     }
 
     private void initData() {
@@ -244,11 +241,10 @@ public class HomeActivity extends RxActivity implements View.OnClickListener,
                 mInnerHandler.post(new Runnable() {
                     @Override
                     public void run() {
-                        //每次打开应用只显示50数据
+                        //每次打开应用只显示40数据
                         doGetVideoData(true);
-//                        bindAIDLService();
                         //之后再加载全部数据
-                        doGetVideoData(false);
+                        mInnerHandler.sendEmptyMessageDelayed(8, 2400);
                     }
                 });
             }
@@ -317,9 +313,13 @@ public class HomeActivity extends RxActivity implements View.OnClickListener,
     }
 
     private void adapterSetData() {
+        Log.d(TAG, "adapterSetData: ");
         normalVideoAdapter.setData(normalVideoList);
         lockVideoAdapter.setData(impactVideoList);
         pictureAdapter.setData(pictureList);
+        normalVideoAdapter.notifyDataSetChanged();
+        lockVideoAdapter.notifyDataSetChanged();
+        pictureAdapter.notifyDataSetChanged();
     }
 
     /**
@@ -401,6 +401,7 @@ public class HomeActivity extends RxActivity implements View.OnClickListener,
      *
      * @param v
      */
+    @SuppressLint("NonConstantResourceId")
     @Override
     public void onClick(View v) {
         List<VideoBean> mList = null;
@@ -572,6 +573,7 @@ public class HomeActivity extends RxActivity implements View.OnClickListener,
      * 3个导航按钮点击事件
      */
     private View.OnClickListener myOnClickListener = new View.OnClickListener() {
+        @SuppressLint("NonConstantResourceId")
         @Override
         public void onClick(View v) {
             switch (v.getId()) {
@@ -707,7 +709,7 @@ public class HomeActivity extends RxActivity implements View.OnClickListener,
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if (keyCode == KeyEvent.KEYCODE_BACK) {
-            exit();
+            doubleClick();
             return false;
         }
         return super.onKeyDown(keyCode, event);
@@ -723,58 +725,29 @@ public class HomeActivity extends RxActivity implements View.OnClickListener,
         }
     }
 
-
-    public void bindAIDLService() {
-        Intent intent = new Intent();
-        intent.setPackage("com.bx.carDVR");
-        intent.setAction("com.bx.carDVR.aidl_service");
-        mContext.bindService(intent, serviceConnection, Context.BIND_AUTO_CREATE);
-    }
-
-    public void unBingAIDLService() {
-        mContext.unbindService(serviceConnection);
-    }
-
-    private ServiceConnection serviceConnection = new ServiceConnection() {
-        @Override
-        public void onServiceConnected(ComponentName name, IBinder service) {
-            listInterface = FileListInterface.Stub.asInterface(service);
-            if (listInterface == null) {
-                Log.d(TAG, "onServiceConnected:null");
-                return;
-            }
-            try {
-                Log.d(TAG, "onServiceConnected: " + listInterface.isRecording());
-                if (listInterface.isRecording()) {
-                    mDialogTool.showStopRecordingDialog();
-                } else {
-                    mViewPager.setVisibility(View.VISIBLE);
-                }
-            } catch (RemoteException e) {
-                Log.e(TAG, "onServiceConnected: " + e.getLocalizedMessage());
-            }
-        }
-
-        @Override
-        public void onServiceDisconnected(ComponentName name) {
-            Log.d(TAG, "onServiceDisconnected: ");
-        }
-
-        @Override
-        public void onNullBinding(ComponentName name) {
-            Log.d(TAG, "onNullBinding: ");
-        }
-
-    };
-
     private void isShowStopRecordingDialog() {
         int state = Settings.Global.getInt(getContentResolver(), CustomValue.CAMERA_RECORD_STATUS, 0);
         if (state == 1) {
             mDialogTool.showStopRecordingDialog();
         } else {
             mViewPager.setVisibility(View.VISIBLE);
+//            mInnerHandler.sendEmptyMessageDelayed(8, 1000);
         }
     }
+
+    private void doubleClick() {
+        Log.d(TAG, "doubleClick: ");
+        long currentTimeMillis = System.currentTimeMillis();
+        long time = currentTimeMillis - lastClickTime;
+        lastClickTime = currentTimeMillis;
+        if (time < DOUBLE_TIME) {
+            Log.d(TAG, "doubleClick:go ");
+            System.exit(0);
+        } else {
+            ToastUtils.showToast(R.string.exit_app);
+        }
+    }
+
 
     @Override
     protected void onStop() {
@@ -797,8 +770,5 @@ public class HomeActivity extends RxActivity implements View.OnClickListener,
             compositeDisposable = null;
         }
         loadingDialogDismiss();
-        if (CustomValue.IS_3IN) {
-            unBingAIDLService();
-        }
     }
 }

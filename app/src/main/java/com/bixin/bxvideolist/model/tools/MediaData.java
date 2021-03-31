@@ -173,8 +173,8 @@ public class MediaData {
             });
             int listSize = files.size();
             if (theFirst) {
-                if (listSize > 30) {
-                    listSize = 30;
+                if (listSize > 40) {
+                    listSize = 40;
                 }
             }
             for (int i = 0; i < listSize; i++) {

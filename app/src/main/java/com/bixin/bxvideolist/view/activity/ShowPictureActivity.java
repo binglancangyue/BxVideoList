@@ -123,14 +123,6 @@ public class ShowPictureActivity extends Activity implements ViewPager.OnPageCha
         tvPictureName.setText(name.substring(name.lastIndexOf("/") + 1));
     }
 
-    public void dissmissControlView() {
-        if (llStatus.getVisibility() == View.GONE) {
-            llStatus.setVisibility(View.VISIBLE);
-        } else {
-            llStatus.setVisibility(View.GONE);
-        }
-    }
-
     private void setViewPager() {
 //        adapter = new PicturePageAdapter(this, views);
         adapter = new PicturePageAdapter(this, imageViewList, picPaths);
@@ -142,6 +134,12 @@ public class ShowPictureActivity extends Activity implements ViewPager.OnPageCha
         imageViewList = new ArrayList<>();
         for (String path : picPaths) {
             ImageView imageView = new ImageView(this);
+            imageView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    dismissControlView();
+                }
+            });
 //            Glide.with(mContext).load(path).into(imageView);
             imageViewList.add(imageView);
         }
@@ -170,6 +168,14 @@ public class ShowPictureActivity extends Activity implements ViewPager.OnPageCha
     @Override
     public void onPageScrollStateChanged(int state) {
 
+    }
+
+    public void dismissControlView() {
+        if (llStatus.getVisibility() == View.GONE) {
+            llStatus.setVisibility(View.VISIBLE);
+        } else {
+            llStatus.setVisibility(View.GONE);
+        }
     }
 
     @Override
