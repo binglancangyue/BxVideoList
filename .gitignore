@@ -98,7 +98,7 @@ lint/generated/
 lint/outputs/
 lint/tmp/
 # lint/reports/
-.idea
+.idea/
 .idea/codeStyles/
 .idea/inspectionProfiles/
 .idea/jarRepositories.xml
@@ -192,4 +192,7 @@ lint/generated/
 lint/outputs/
 lint/tmp/
 # lint/reports/
+.idea
+.idea/shelf
+app/release
 
