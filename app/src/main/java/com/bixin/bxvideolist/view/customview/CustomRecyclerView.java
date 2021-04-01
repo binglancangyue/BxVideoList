@@ -53,6 +53,9 @@ public class CustomRecyclerView extends ViewGroup {
         if (type == 1) {
             lock.setText(R.string.unlock);
         }
+        if (type == 2) {
+            lock.setVisibility(View.GONE);
+        }
         xRecyclerView = new XRecyclerView(context);
         xRecyclerView.setPullRefreshEnabled(false);
         xRecyclerView.setLoadingMoreEnabled(true);

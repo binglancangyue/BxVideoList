@@ -1,16 +1,12 @@
 package com.bixin.bxvideolist.view.activity;
 
-import android.Manifest;
 import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.provider.Settings;
-import android.support.v4.app.ActivityCompat;
 import android.support.v4.view.ViewPager;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -22,7 +18,6 @@ import com.bixin.bxvideolist.R;
 import com.bixin.bxvideolist.adapter.HomeRecyclerViewAdapter;
 import com.bixin.bxvideolist.adapter.ViewPageAdapter;
 import com.bixin.bxvideolist.model.CustomValue;
-import com.bixin.bxvideolist.model.DvrAIDL;
 import com.bixin.bxvideolist.model.bean.VideoBean;
 import com.bixin.bxvideolist.model.listener.OnDialogListener;
 import com.bixin.bxvideolist.model.listener.OnRecyclerViewItemListener;
@@ -31,17 +26,12 @@ import com.bixin.bxvideolist.model.tools.ShowDialogTool;
 import com.bixin.bxvideolist.model.tools.ToastUtils;
 import com.bixin.bxvideolist.model.tools.VideoListOperationTool;
 import com.bixin.bxvideolist.view.customview.CustomRecyclerView;
-import com.tbruyelle.rxpermissions2.Permission;
-import com.tbruyelle.rxpermissions2.RxPermissions;
 import com.trello.rxlifecycle2.android.ActivityEvent;
 import com.trello.rxlifecycle2.components.RxActivity;
 
-import java.io.File;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 
 import io.reactivex.Observable;
 import io.reactivex.ObservableEmitter;
@@ -122,37 +112,21 @@ public class HomeActivity extends RxActivity implements View.OnClickListener,
             if (activity != null) {
                 switch (msg.what) {
                     case CustomValue.LOCK_FILE:
-//                        activity.lockFile(R.id.lock);
                         activity.toLockFile(R.id.lock);
                         break;
                     case CustomValue.DELETE_FILE:
-//                        activity.lockFile(R.id.delete);
                         activity.toLockFile(R.id.delete);
                         break;
                     case CustomValue.CLOSE_DIALOG:
                         activity.loadingDialogDismiss();
                         break;
                     case 6:
-                        /*if (msg.arg1 == 0) {
-                            activity.fileManagement(activity.normalVideoList,
-                                    activity.impactVideoList);
-                        }
-                        if (msg.arg1 == 1) {
-                            activity.fileManagement(activity.impactVideoList,
-                                    activity.normalVideoList);
-                        }
-                        if (msg.arg1 == 2) {
-                            activity.fileManagement(activity.pictureList, activity.pictureList);
-                        }
-                        activity.normalVideoAdapter.notifyDataSetChanged();
-                        activity.lockVideoAdapter.notifyDataSetChanged();
-                        activity.pictureAdapter.notifyDataSetChanged();*/
+
                         break;
                     case 7:
                         activity.normalVideoRecyclerView.setHasButton(true);
                         break;
                     case 8:
-//                        activity.mViewPager.setVisibility(View.VISIBLE);
                         activity.doGetVideoData(false);
                         break;
                     default:
@@ -174,19 +148,11 @@ public class HomeActivity extends RxActivity implements View.OnClickListener,
     @SuppressLint("InflateParams")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        setStatusBarVisible(false);
+//        setStatusBarVisible(false);
         super.onCreate(savedInstanceState);
-        View view;
-        if (CustomValue.IS_KD003) {
-            view = getLayoutInflater().inflate(R.layout.activity_main_kd003, null);
-        } else {
-            view = getLayoutInflater().inflate(R.layout.activity_main, null);
-        }
-        setContentView(view);
+        setContentView(R.layout.activity_main);
         init();
         initView();
-//        initData();
-//        requestPermissions(HomeActivity.this);
         initData();
     }
 
@@ -205,24 +171,6 @@ public class HomeActivity extends RxActivity implements View.OnClickListener,
             uiFlags |= 0x00001000;
             getWindow().getDecorView().setSystemUiVisibility(uiFlags);
         }
-    }
-
-    private void get(Map<String, List<String>> map) {
-        List<VideoBean> list = new ArrayList<>();
-        Iterator<Map.Entry<String, List<String>>> entries = map.entrySet().iterator();
-        while (entries.hasNext()) {
-            Map.Entry<String, List<String>> entry = entries.next();
-            List<String> stringList = entry.getValue();
-            Log.d(TAG, "get:name  " + entry.getKey());
-            for (String s : stringList) {
-                VideoBean videoBean = new VideoBean();
-                videoBean.setName(new File(s).getName());
-                videoBean.setPath(s);
-                Log.d(TAG, "get: path " + s);
-                list.add(videoBean);
-            }
-        }
-        pictureList = list;
     }
 
     private void init() {
@@ -249,36 +197,6 @@ public class HomeActivity extends RxActivity implements View.OnClickListener,
                 });
             }
         });
-    }
-
-    private void initDataTest() {
-        mDialogTool.showStopRecordingDialog();
-        doGetVideoData(true);
-    }
-
-
-    @SuppressLint("CheckResult")
-    private void doGetVideoData(Map<String, List<String>> map) {
-        compositeDisposable.add(Observable.create(new ObservableOnSubscribe<String>() {
-            @Override
-            public void subscribe(ObservableEmitter<String> emitter) throws Exception {
-                getData(true);
-//                get(map);
-                emitter.onNext("ok");
-            }
-        }).subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .compose(bindUntilEvent(ActivityEvent.DESTROY))
-                .subscribe(new Consumer<String>() {
-                    @Override
-                    public void accept(String s) throws Exception {
-                        if (s.equals("ok")) {
-                            initPagerItemView();
-                            adapter = new ViewPageAdapter(viewList);
-                            mViewPager.setAdapter(adapter);
-                        }
-                    }
-                }));
     }
 
     @SuppressLint("CheckResult")
@@ -330,9 +248,6 @@ public class HomeActivity extends RxActivity implements View.OnClickListener,
             mediaData = new MediaData();
         }
         mediaData.rescan(theFirst);
-//        mediaData.rescan();
-//        List<VideoBean> videoBeans=new ArrayList<>();
-//        videoBeans.add(new VideoBean("asd",))
         normalVideoList = mediaData.getNormalVideoList();
         impactVideoList = mediaData.getImpactVideoList();
         pictureList = mediaData.getPictureList();
@@ -385,8 +300,6 @@ public class HomeActivity extends RxActivity implements View.OnClickListener,
         lockVideoRecyclerView.setAdapter(lockVideoAdapter);
         pictureRecyclerView.setAdapter(pictureAdapter);
 
-//        setRecyclerViewLoadingListener();
-//        setRecyclerViewScrollListener();
         normalVideoRecyclerView.setButtonOnClickListener(this);
         lockVideoRecyclerView.setButtonOnClickListener(this);
         pictureRecyclerView.setButtonOnClickListener(this);
@@ -658,45 +571,6 @@ public class HomeActivity extends RxActivity implements View.OnClickListener,
                 });
     }
 
-
-    @SuppressLint("CheckResult")
-    public void requestPermissions(Activity activity) {
-        String[] permissions = {Manifest.permission.READ_EXTERNAL_STORAGE,
-                Manifest.permission.WRITE_EXTERNAL_STORAGE};
-
-        List<String> stringList = new ArrayList<>();
-        for (String s : permissions) {
-            if (ActivityCompat.checkSelfPermission(this, s)
-                    != PackageManager.PERMISSION_GRANTED) {
-                stringList.add(s);
-            }
-        }
-        if (!stringList.isEmpty()) {
-            RxPermissions rxPermission = new RxPermissions(activity);
-            rxPermission.requestEach(permissions)
-                    .subscribe(new Consumer<Permission>() {
-                        @Override
-                        public void accept(Permission permission) {
-                            if (permission.granted) {// 用户已经同意该权限
-//                            initData();
-                                initDataTest();
-                                Log.d(TAG, permission.name + " is granted.");
-                            } else if (permission.shouldShowRequestPermissionRationale) {
-                                // 用户拒绝了该权限，没有选中『不再询问』（Never ask again）,那么下次再次启动时，还会提示请求权限的对话框
-                                Log.d(TAG, permission.name + " is denied. More info should be " +
-                                        "provided.");
-                                finish();
-                            } else { // 用户拒绝了该权限，并且选中『不再询问』
-                                finish();
-                                Log.d(TAG, permission.name + " is denied.");
-                            }
-                        }
-                    });
-        } else {
-            initData();
-        }
-    }
-
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -736,22 +610,22 @@ public class HomeActivity extends RxActivity implements View.OnClickListener,
     }
 
     private void doubleClick() {
-        Log.d(TAG, "doubleClick: ");
         long currentTimeMillis = System.currentTimeMillis();
         long time = currentTimeMillis - lastClickTime;
         lastClickTime = currentTimeMillis;
         if (time < DOUBLE_TIME) {
             Log.d(TAG, "doubleClick:go ");
-            System.exit(0);
+            finish();
         } else {
+            Log.d(TAG, "doubleClick: ");
             ToastUtils.showToast(R.string.exit_app);
         }
     }
 
-
     @Override
     protected void onStop() {
         super.onStop();
+        Log.d(TAG, "onStop");
         if (isNotShowDialog) {
             finish();
         }
@@ -760,6 +634,7 @@ public class HomeActivity extends RxActivity implements View.OnClickListener,
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        Log.d(TAG, "onDestroy");
         if (mInnerHandler != null) {
             mInnerHandler.removeCallbacksAndMessages(null);
             mInnerHandler = null;
@@ -770,5 +645,6 @@ public class HomeActivity extends RxActivity implements View.OnClickListener,
             compositeDisposable = null;
         }
         loadingDialogDismiss();
+        System.exit(0);
     }
 }
