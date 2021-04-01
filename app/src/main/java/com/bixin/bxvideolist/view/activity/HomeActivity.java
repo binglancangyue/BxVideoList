@@ -318,9 +318,13 @@ public class HomeActivity extends RxActivity implements View.OnClickListener,
     }
 
     private void adapterSetData() {
+        Log.d(TAG, "adapterSetData notifyDataSetChanged");
         normalVideoAdapter.setData(normalVideoList);
         lockVideoAdapter.setData(impactVideoList);
         pictureAdapter.setData(pictureList);
+        normalVideoAdapter.notifyDataSetChanged();
+        lockVideoAdapter.notifyDataSetChanged();
+        pictureAdapter.notifyDataSetChanged();
     }
 
     /**
@@ -737,7 +741,6 @@ public class HomeActivity extends RxActivity implements View.OnClickListener,
     private static final long DOUBLE_TIME = 1000;
 
     private void doubleClick() {
-        Log.d(TAG, "doubleClick: ");
         long currentTimeMillis = System.currentTimeMillis();
         long time = currentTimeMillis - lastClickTime;
         lastClickTime = currentTimeMillis;
@@ -745,6 +748,7 @@ public class HomeActivity extends RxActivity implements View.OnClickListener,
             Log.d(TAG, "doubleClick:go ");
             finish();
         } else {
+            Log.d(TAG, "doubleClick: ");
             ToastUtils.showToast(R.string.exit_app);
         }
     }
