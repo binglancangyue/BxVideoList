@@ -1,27 +1,22 @@
 package com.bixin.bxvideolist.view.activity;
 
-import android.Manifest;
 import android.annotation.SuppressLint;
-import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import androidx.core.app.ActivityCompat;
-import androidx.viewpager.widget.ViewPager;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 
+import androidx.viewpager.widget.ViewPager;
+
 import com.bixin.bxvideolist.R;
 import com.bixin.bxvideolist.adapter.HomeRecyclerViewAdapter;
 import com.bixin.bxvideolist.adapter.ViewPageAdapter;
 import com.bixin.bxvideolist.model.CustomValue;
-import com.bixin.bxvideolist.model.DvrAIDL;
 import com.bixin.bxvideolist.model.bean.VideoBean;
 import com.bixin.bxvideolist.model.listener.OnDialogListener;
 import com.bixin.bxvideolist.model.listener.OnRecyclerViewItemListener;
@@ -30,17 +25,14 @@ import com.bixin.bxvideolist.model.tools.ShowDialogTool;
 import com.bixin.bxvideolist.model.tools.ToastUtils;
 import com.bixin.bxvideolist.model.tools.VideoListOperationTool;
 import com.bixin.bxvideolist.view.customview.CustomRecyclerView;
-import com.tbruyelle.rxpermissions2.Permission;
-import com.tbruyelle.rxpermissions2.RxPermissions;
 import com.trello.rxlifecycle2.android.ActivityEvent;
 import com.trello.rxlifecycle2.components.RxActivity;
 
-import java.io.File;
+import org.jetbrains.annotations.NotNull;
+
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 
 import io.reactivex.Observable;
 import io.reactivex.ObservableEmitter;
@@ -56,7 +48,6 @@ import io.reactivex.schedulers.Schedulers;
 public class HomeActivity extends RxActivity implements View.OnClickListener,
         OnRecyclerViewItemListener, OnDialogListener {
     private static final String TAG = "HomeActivity";
-    private Context mContext;
     private ViewPager mViewPager;
     private List<VideoBean> normalVideoList;
     private List<VideoBean> impactVideoList;
@@ -77,14 +68,10 @@ public class HomeActivity extends RxActivity implements View.OnClickListener,
     private MediaData mediaData;
     private ShowDialogTool mDialogTool;
     private VideoListOperationTool mFileTool;
-
-    private ImageView ivLockVideo;
-    private ImageView ivPhoto;
-    private ImageView ivNormalVideo;
     private boolean isExit = false;
     private boolean isNotShowDialog = true;
-    private DvrAIDL dvrAIDL;
-//    private FileListInterface listInterface;
+    private static final long DOUBLE_TIME = 1000;
+    private static long lastClickTime = 0;
 
     @Override
     public void doSomething(int type) {
@@ -114,46 +101,32 @@ public class HomeActivity extends RxActivity implements View.OnClickListener,
         }
 
         @Override
-        public void handleMessage(Message msg) {
+        public void handleMessage(@NotNull Message msg) {
             super.handleMessage(msg);
             HomeActivity activity = activityWeakReference.get();
+            int msgCode = msg.what;
             if (activity != null) {
-                switch (msg.what) {
+                switch (msgCode) {
                     case CustomValue.LOCK_FILE:
-//                        activity.lockFile(R.id.lock);
                         activity.toLockFile(R.id.lock);
                         break;
                     case CustomValue.DELETE_FILE:
-//                        activity.lockFile(R.id.delete);
                         activity.toLockFile(R.id.delete);
                         break;
                     case CustomValue.CLOSE_DIALOG:
                         activity.loadingDialogDismiss();
                         break;
                     case 6:
-                        /*if (msg.arg1 == 0) {
-                            activity.fileManagement(activity.normalVideoList,
-                                    activity.impactVideoList);
-                        }
-                        if (msg.arg1 == 1) {
-                            activity.fileManagement(activity.impactVideoList,
-                                    activity.normalVideoList);
-                        }
-                        if (msg.arg1 == 2) {
-                            activity.fileManagement(activity.pictureList, activity.pictureList);
-                        }
-                        activity.normalVideoAdapter.notifyDataSetChanged();
-                        activity.lockVideoAdapter.notifyDataSetChanged();
-                        activity.pictureAdapter.notifyDataSetChanged();*/
+                        activity.doGetVideoData(false);
                         break;
                     case 7:
                         activity.normalVideoRecyclerView.setHasButton(true);
-
                         break;
                     default:
                         break;
                 }
             }
+            removeMessages(msgCode);
         }
     }
 
@@ -168,66 +141,18 @@ public class HomeActivity extends RxActivity implements View.OnClickListener,
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        setStatusBarVisible(false);
         super.onCreate(savedInstanceState);
-        View view;
-        if (CustomValue.IS_KD003) {
-            view = getLayoutInflater().inflate(R.layout.activity_main_kd003, null);
-        } else {
-            view = getLayoutInflater().inflate(R.layout.activity_main, null);
-        }
-        setContentView(view);
+        setContentView(R.layout.activity_main);
         init();
         initView();
-//        initData();
-//        requestPermissions(HomeActivity.this);
         initData();
     }
 
-    private void setStatusBarVisible(boolean show) {
-        if (!CustomValue.IS_966) {
-            return;
-        }
-        if (show) {
-            int uiFlags = View.SYSTEM_UI_FLAG_LAYOUT_STABLE;
-            uiFlags |= 0x00001000;
-            getWindow().getDecorView().setSystemUiVisibility(uiFlags);
-        } else {
-            int uiFlags = View.SYSTEM_UI_FLAG_LAYOUT_STABLE
-                    | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
-                    | View.SYSTEM_UI_FLAG_FULLSCREEN;
-            uiFlags |= 0x00001000;
-            getWindow().getDecorView().setSystemUiVisibility(uiFlags);
-        }
-    }
-
-    private void get(Map<String, List<String>> map) {
-        List<VideoBean> list = new ArrayList<>();
-        Iterator<Map.Entry<String, List<String>>> entries = map.entrySet().iterator();
-        while (entries.hasNext()) {
-            Map.Entry<String, List<String>> entry = entries.next();
-            List<String> stringList = entry.getValue();
-            Log.d(TAG, "get:name  " + entry.getKey());
-            for (String s : stringList) {
-                VideoBean videoBean = new VideoBean();
-                videoBean.setName(new File(s).getName());
-                videoBean.setPath(s);
-                Log.d(TAG, "get: path " + s);
-                list.add(videoBean);
-            }
-        }
-        pictureList = list;
-    }
-
     private void init() {
-        this.mContext = this;
         mInnerHandler = new InnerHandler(this);
         mDialogTool = new ShowDialogTool(this, this);
         mFileTool = new VideoListOperationTool();
         compositeDisposable = new CompositeDisposable();
-//        if (CustomValue.IS_3IN) {
-//            bindAIDLService();
-//        }
     }
 
     private void initData() {
@@ -242,43 +167,12 @@ public class HomeActivity extends RxActivity implements View.OnClickListener,
                     public void run() {
                         //每次打开应用只显示50数据
                         doGetVideoData(true);
-//                        bindAIDLService();
                         //之后再加载全部数据
-                        doGetVideoData(false);
+                        mInnerHandler.sendEmptyMessageDelayed(6, 2400);
                     }
                 });
             }
         });
-    }
-
-    private void initDataTest() {
-        mDialogTool.showStopRecordingDialog();
-        doGetVideoData(true);
-    }
-
-
-    @SuppressLint("CheckResult")
-    private void doGetVideoData(Map<String, List<String>> map) {
-        compositeDisposable.add(Observable.create(new ObservableOnSubscribe<String>() {
-            @Override
-            public void subscribe(ObservableEmitter<String> emitter) throws Exception {
-                getData(true);
-//                get(map);
-                emitter.onNext("ok");
-            }
-        }).subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .compose(bindUntilEvent(ActivityEvent.DESTROY))
-                .subscribe(new Consumer<String>() {
-                    @Override
-                    public void accept(String s) throws Exception {
-                        if (s.equals("ok")) {
-                            initPagerItemView();
-                            adapter = new ViewPageAdapter(viewList);
-                            mViewPager.setAdapter(adapter);
-                        }
-                    }
-                }));
     }
 
     @SuppressLint("CheckResult")
@@ -326,9 +220,6 @@ public class HomeActivity extends RxActivity implements View.OnClickListener,
             mediaData = new MediaData();
         }
         mediaData.rescan(theFirst);
-//        mediaData.rescan();
-//        List<VideoBean> videoBeans=new ArrayList<>();
-//        videoBeans.add(new VideoBean("asd",))
         normalVideoList = mediaData.getNormalVideoList();
         impactVideoList = mediaData.getImpactVideoList();
         pictureList = mediaData.getPictureList();
@@ -347,13 +238,12 @@ public class HomeActivity extends RxActivity implements View.OnClickListener,
         ctlPicture.setOnClickListener(myOnClickListener);
 //        mViewPager.setOffscreenPageLimit(2);
         if (CustomValue.IS_KD003) {
-            ivNormalVideo = findViewById(R.id.iv_normal);
-            ivLockVideo = findViewById(R.id.iv_lock);
-            ivPhoto = findViewById(R.id.iv_picture);
+            ImageView ivNormalVideo = findViewById(R.id.iv_normal);
+            ImageView ivLockVideo = findViewById(R.id.iv_lock);
+            ImageView ivPhoto = findViewById(R.id.iv_picture);
             ivLockVideo.setImageResource(R.drawable.icon_home_cloud_video);
             ivPhoto.setImageResource(R.drawable.icon_home_photo);
         }
-
         mViewPager.setCurrentItem(0);
         mViewPager.setVisibility(View.INVISIBLE);
         changeColor(0);
@@ -381,8 +271,6 @@ public class HomeActivity extends RxActivity implements View.OnClickListener,
         lockVideoRecyclerView.setAdapter(lockVideoAdapter);
         pictureRecyclerView.setAdapter(pictureAdapter);
 
-//        setRecyclerViewLoadingListener();
-//        setRecyclerViewScrollListener();
         normalVideoRecyclerView.setButtonOnClickListener(this);
         lockVideoRecyclerView.setButtonOnClickListener(this);
         pictureRecyclerView.setButtonOnClickListener(this);
@@ -397,6 +285,7 @@ public class HomeActivity extends RxActivity implements View.OnClickListener,
      *
      * @param v
      */
+    @SuppressLint("NonConstantResourceId")
     @Override
     public void onClick(View v) {
         List<VideoBean> mList = null;
@@ -433,7 +322,6 @@ public class HomeActivity extends RxActivity implements View.OnClickListener,
                 break;
             case R.id.lock:
                 mDialogTool.showLockDialog(currentPage);
-//                showLockDialog();
                 break;
             case R.id.delete:
                 mDialogTool.showDeleteDialog(currentPage);
@@ -568,6 +456,7 @@ public class HomeActivity extends RxActivity implements View.OnClickListener,
      * 3个导航按钮点击事件
      */
     private View.OnClickListener myOnClickListener = new View.OnClickListener() {
+        @SuppressLint("NonConstantResourceId")
         @Override
         public void onClick(View v) {
             switch (v.getId()) {
@@ -652,45 +541,6 @@ public class HomeActivity extends RxActivity implements View.OnClickListener,
                 });
     }
 
-
-    @SuppressLint("CheckResult")
-    public void requestPermissions(Activity activity) {
-        String[] permissions = {Manifest.permission.READ_EXTERNAL_STORAGE,
-                Manifest.permission.WRITE_EXTERNAL_STORAGE};
-
-        List<String> stringList = new ArrayList<>();
-        for (String s : permissions) {
-            if (ActivityCompat.checkSelfPermission(this, s)
-                    != PackageManager.PERMISSION_GRANTED) {
-                stringList.add(s);
-            }
-        }
-        if (!stringList.isEmpty()) {
-            RxPermissions rxPermission = new RxPermissions(activity);
-            rxPermission.requestEach(permissions)
-                    .subscribe(new Consumer<Permission>() {
-                        @Override
-                        public void accept(Permission permission) {
-                            if (permission.granted) {// 用户已经同意该权限
-//                            initData();
-                                initDataTest();
-                                Log.d(TAG, permission.name + " is granted.");
-                            } else if (permission.shouldShowRequestPermissionRationale) {
-                                // 用户拒绝了该权限，没有选中『不再询问』（Never ask again）,那么下次再次启动时，还会提示请求权限的对话框
-                                Log.d(TAG, permission.name + " is denied. More info should be " +
-                                        "provided.");
-                                finish();
-                            } else { // 用户拒绝了该权限，并且选中『不再询问』
-                                finish();
-                                Log.d(TAG, permission.name + " is denied.");
-                            }
-                        }
-                    });
-        } else {
-            initData();
-        }
-    }
-
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -703,71 +553,29 @@ public class HomeActivity extends RxActivity implements View.OnClickListener,
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if (keyCode == KeyEvent.KEYCODE_BACK) {
-            exit();
+            doubleClick();
             return false;
         }
         return super.onKeyDown(keyCode, event);
     }
 
-    private void exit() {
-        if (!isExit) {
-            isExit = true;
-            ToastUtils.showToast(R.string.exit_app);
-            mInnerHandler.sendEmptyMessageDelayed(CustomValue.HANDLE_EXIT_APP, 2000);
+    private void doubleClick() {
+        long currentTimeMillis = System.currentTimeMillis();
+        long time = currentTimeMillis - lastClickTime;
+        lastClickTime = currentTimeMillis;
+        if (time < DOUBLE_TIME) {
+            Log.d(TAG, "doubleClick:go ");
+            finish();
         } else {
-            System.exit(0);
+            Log.d(TAG, "doubleClick: ");
+            ToastUtils.showToast(R.string.exit_app);
         }
     }
-
-
-/*    public void bindAIDLService() {
-        Intent intent = new Intent();
-        intent.setPackage("com.bx.carDVR");
-        intent.setAction("com.bx.carDVR.aidl_service");
-        mContext.bindService(intent, serviceConnection, Context.BIND_AUTO_CREATE);
-    }
-
-    public void unBingAIDLService() {
-        mContext.unbindService(serviceConnection);
-    }*/
-
-/*
-    private ServiceConnection serviceConnection = new ServiceConnection() {
-        @Override
-        public void onServiceConnected(ComponentName name, IBinder service) {
-            listInterface = FileListInterface.Stub.asInterface(service);
-            if (listInterface == null) {
-                Log.d(TAG, "onServiceConnected:null");
-                return;
-            }
-            try {
-                Log.d(TAG, "onServiceConnected: " + listInterface.isRecording());
-                if (listInterface.isRecording()) {
-                    mDialogTool.showStopRecordingDialog();
-                } else {
-                    mViewPager.setVisibility(View.VISIBLE);
-                }
-            } catch (RemoteException e) {
-                Log.e(TAG, "onServiceConnected: " + e.getLocalizedMessage());
-            }
-        }
-
-        @Override
-        public void onServiceDisconnected(ComponentName name) {
-            Log.d(TAG, "onServiceDisconnected: ");
-        }
-
-        @Override
-        public void onNullBinding(ComponentName name) {
-            Log.d(TAG, "onNullBinding: ");
-        }
-
-    };
-*/
 
     @Override
     protected void onStop() {
         super.onStop();
+        Log.d(TAG, "onStop");
         if (isNotShowDialog) {
             finish();
         }
@@ -776,6 +584,7 @@ public class HomeActivity extends RxActivity implements View.OnClickListener,
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        Log.d(TAG, "onDestroy");
         if (mInnerHandler != null) {
             mInnerHandler.removeCallbacksAndMessages(null);
             mInnerHandler = null;
@@ -786,8 +595,7 @@ public class HomeActivity extends RxActivity implements View.OnClickListener,
             compositeDisposable = null;
         }
         loadingDialogDismiss();
-//        if (CustomValue.IS_3IN) {
-//            unBingAIDLService();
-//        }
+        System.exit(0);
     }
+
 }
