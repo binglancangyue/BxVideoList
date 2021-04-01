@@ -83,8 +83,8 @@ public class HomeActivity extends RxActivity implements View.OnClickListener,
     private ImageView ivNormalVideo;
     private boolean isExit = false;
     private boolean isNotShowDialog = true;
-    private DvrAIDL dvrAIDL;
-//    private FileListInterface listInterface;
+    private long lastClickTime = 0;
+    private static final long DOUBLE_TIME = 1000;
 
     @Override
     public void doSomething(int type) {
@@ -172,13 +172,7 @@ public class HomeActivity extends RxActivity implements View.OnClickListener,
     protected void onCreate(Bundle savedInstanceState) {
         setStatusBarVisible(false);
         super.onCreate(savedInstanceState);
-        View view;
-        if (CustomValue.IS_KD003) {
-            view = getLayoutInflater().inflate(R.layout.activity_main_kd003, null);
-        } else {
-            view = getLayoutInflater().inflate(R.layout.activity_main, null);
-        }
-        setContentView(view);
+        setContentView(R.layout.activity_main);
         init();
         initView();
 //        initData();
@@ -314,10 +308,17 @@ public class HomeActivity extends RxActivity implements View.OnClickListener,
                 }));
     }
 
+    /**
+     * 更新RecyclerView数据
+     */
     private void adapterSetData() {
+        Log.d(TAG, "adapterSetData");
         normalVideoAdapter.setData(normalVideoList);
         lockVideoAdapter.setData(impactVideoList);
         pictureAdapter.setData(pictureList);
+        normalVideoAdapter.notifyDataSetChanged();
+        lockVideoAdapter.notifyDataSetChanged();
+        pictureAdapter.notifyDataSetChanged();
     }
 
     /**
@@ -767,11 +768,7 @@ public class HomeActivity extends RxActivity implements View.OnClickListener,
     };
 */
 
-    private long lastClickTime = 0;
-    private static final long DOUBLE_TIME = 1000;
-
     private void doubleClick() {
-        Log.d(TAG, "doubleClick: ");
         long currentTimeMillis = System.currentTimeMillis();
         long time = currentTimeMillis - lastClickTime;
         lastClickTime = currentTimeMillis;
@@ -779,6 +776,7 @@ public class HomeActivity extends RxActivity implements View.OnClickListener,
             Log.d(TAG, "doubleClick:go ");
             System.exit(0);
         } else {
+            Log.d(TAG, "doubleClick: ");
             ToastUtils.showToast(R.string.exit_app);
         }
     }
