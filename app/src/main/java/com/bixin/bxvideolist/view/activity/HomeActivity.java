@@ -722,59 +722,13 @@ public class HomeActivity extends RxActivity implements View.OnClickListener,
         }
     }
 
-
-/*    public void bindAIDLService() {
-        Intent intent = new Intent();
-        intent.setPackage("com.bx.carDVR");
-        intent.setAction("com.bx.carDVR.aidl_service");
-        mContext.bindService(intent, serviceConnection, Context.BIND_AUTO_CREATE);
-    }
-
-    public void unBingAIDLService() {
-        mContext.unbindService(serviceConnection);
-    }*/
-
-/*
-    private ServiceConnection serviceConnection = new ServiceConnection() {
-        @Override
-        public void onServiceConnected(ComponentName name, IBinder service) {
-            listInterface = FileListInterface.Stub.asInterface(service);
-            if (listInterface == null) {
-                Log.d(TAG, "onServiceConnected:null");
-                return;
-            }
-            try {
-                Log.d(TAG, "onServiceConnected: " + listInterface.isRecording());
-                if (listInterface.isRecording()) {
-                    mDialogTool.showStopRecordingDialog();
-                } else {
-                    mViewPager.setVisibility(View.VISIBLE);
-                }
-            } catch (RemoteException e) {
-                Log.e(TAG, "onServiceConnected: " + e.getLocalizedMessage());
-            }
-        }
-
-        @Override
-        public void onServiceDisconnected(ComponentName name) {
-            Log.d(TAG, "onServiceDisconnected: ");
-        }
-
-        @Override
-        public void onNullBinding(ComponentName name) {
-            Log.d(TAG, "onNullBinding: ");
-        }
-
-    };
-*/
-
     private void doubleClick() {
         long currentTimeMillis = System.currentTimeMillis();
         long time = currentTimeMillis - lastClickTime;
         lastClickTime = currentTimeMillis;
         if (time < DOUBLE_TIME) {
             Log.d(TAG, "doubleClick:go ");
-            System.exit(0);
+            finish();
         } else {
             Log.d(TAG, "doubleClick: ");
             ToastUtils.showToast(R.string.exit_app);
@@ -784,6 +738,7 @@ public class HomeActivity extends RxActivity implements View.OnClickListener,
     @Override
     protected void onStop() {
         super.onStop();
+        Log.d(TAG, "onStop");
         if (isNotShowDialog) {
             finish();
         }
@@ -792,6 +747,7 @@ public class HomeActivity extends RxActivity implements View.OnClickListener,
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        Log.d(TAG, "onDestroy");
         if (mInnerHandler != null) {
             mInnerHandler.removeCallbacksAndMessages(null);
             mInnerHandler = null;
@@ -802,6 +758,7 @@ public class HomeActivity extends RxActivity implements View.OnClickListener,
             compositeDisposable = null;
         }
         loadingDialogDismiss();
+        System.exit(0);
 //        if (CustomValue.IS_3IN) {
 //            unBingAIDLService();
 //        }
